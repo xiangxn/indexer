@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+import "google/api/annotations.proto";
+
+package donut_bot;
+
+service DonutBot {
+
+  rpc PushMessage(PushMessageRequest) returns (BaseReply) {
+    option (google.api.http) = {
+      post : "/v1/common/pushmessage"
+      body : "*"
+    };
+  }
+}
+
+message PushMessageRequest {
+  string channel = 1;
+  string message = 2;
+}
+
+message BaseReply {
+  int32 code = 1;
+  string msg = 2;
+}

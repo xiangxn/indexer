@@ -1,0 +1,41 @@
+{
+    "grpc_port": 50000,
+    "restful_port": 8081,
+    "graphql_port": 5000,
+    "grpc_host": "grpc",
+    "contracts": {
+        "Committee": "0x524d1C459DE80820D8EeeDdbeB891799c5523C85",
+        "CommunityFactory": "0x113866ac496Bd85A8A8a687d04139bA441d09276",
+        "ERC20StakingFactory": "0xF897E61D2bd4002B5dE45026f6a9F5b4704Cb8Be",
+        "SPStakingFactory": "0x9Df9D7412E4462AA863A35B54142d1D35F07b214",
+        "CosmosStakingFactory": "0xbe1709B3D175aaecA132BEA8630063E99f090D68",
+        "Gauge": "0x56c44B51eaCcd283024523dF1268A8E01887C218",
+        "ERC1155StakingFactory": "0x54301D1dc7751B1824cF3020a3f479112caD738c",
+        "TreasuryFactory": "0x8428aD36744a9917112c2A9a40C4f48FCF80e39E"
+    },
+    "sync_cfg": {
+        "chain_api": [
+            "https://goerli.infura.io/v3/8b89094fea30422cbb87ee199c924397",
+            "https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
+        ],
+        "start_block": 6625402,
+        "max_chunk_scan_size": 5000,
+        "max_request_retries": 10,
+        "request_interval_sec": 0.5,
+        "request_retry_seconds": 3.0,
+        "realtime_scan_interval_sec": 5,
+        "chain_reorg_safety_blocks": 1,
+        "scan_database_step_size": 1000
+    },
+    "mongo": {
+        "host": "mongodb://localhost:3001/",
+        "db": "donut_center",
+        "log": "donut_event_log"
+    },
+    "discord": {
+        "bot_server": "104.152.208.28:10086",
+        "channels": {
+            "monitor": "service-monitoring"
+        }
+    }
+}

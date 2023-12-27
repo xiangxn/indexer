@@ -1,0 +1,35 @@
+{
+    "grpc_port": 50000,
+    "restful_port": 8081,
+    "graphql_port": 5000,
+    "grpc_host": "grpc",
+    "contracts": {
+        "CShare": "0xd9210830afDEe5C8e5120dCC7a0C4Fa23997Ef25",
+        "Donut": "0xe86305b400E69ffFb5CF8Fce2a90659174777A79",
+        "TwitterInscription": "0x59102Eb8eE1296c2793e3F8E59197683963Bff69"
+    },
+    "sync_cfg": {
+        "chain_api": [
+            "https://mainnet.base.org/"
+        ],
+        "start_block": 8168584,
+        "max_chunk_scan_size": 2000,
+        "max_request_retries": 10,
+        "request_interval_sec": 1.0,
+        "request_retry_seconds": 3.0,
+        "realtime_scan_interval_sec": 5,
+        "chain_reorg_safety_blocks": 6,
+        "scan_database_step_size": 1000
+    },
+    "mongo": {
+        "host": "mongodb://root:data-center-2022@mongo:27017/",
+        "db": "donut-inscription",
+        "log": "donut_event_log"
+    },
+    "discord": {
+        "bot_server": "104.152.208.28:10086",
+        "channels": {
+            "monitor": "service-monitoring"
+        }
+    }
+}

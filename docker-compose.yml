@@ -1,0 +1,50 @@
+version: '3.2'
+services:
+  sync:
+    build: ./
+    environment:
+      CONFIG_MONGODB_URL: mongodb://root:data-center-2022@mongo:27017/
+    depends_on:
+      - mongo
+    volumes:
+      - ".:/data-center"
+    command: /bin/bash -c "paver clean && ./buildrpc.sh && paver run sync -I"
+
+  graphql:
+    image: datacenter_sync:latest
+    ports:
+      - "5000:5000"
+    volumes:
+      - ".:/data-center"
+    depends_on:
+      - sync
+      - mongo
+    command: /bin/bash -c "/data-center/wait_for_sync.sh && paver run flask"
+
+  grpc:
+    image: datacenter_sync:latest
+    ports:
+      - "50000:50000"
+    volumes:
+      - ".:/data-center"
+    depends_on:
+      - sync
+      - mongo
+    command: /bin/bash -c "/data-center/wait_for_sync.sh && paver run grpc"
+
+  restful:
+    image: datacenter_sync:latest
+    ports:
+      - "8081:8081"
+    volumes:
+      - ".:/data-center"
+    depends_on:
+      - sync
+    command: /bin/bash -c "/data-center/wait_for_sync.sh && /data-center/restful_proxy"
+
+  mongo:
+    image: mongo:latest
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: data-center-2022

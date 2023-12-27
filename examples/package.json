@@ -1,0 +1,18 @@
+{
+  "license": "MIT",
+  "scripts": {
+    "gen": "./gengrpc.sh",
+    "restful": "node ./js/restful.js",
+    "grpc": "node ./js/grpc.js"
+  },
+  "dependencies": {
+    "@grpc/grpc-js": "^1.5.9",
+    "google-protobuf": "^3.20.0-rc.2",
+    "graphql": "^16.3.0",
+    "graphql-request": "^4.1.0"
+  },
+  "devDependencies": {
+    "grpc-tools": "^1.11.2",
+    "grpc_tools_node_protoc_ts": "^5.3.2"
+  }
+}

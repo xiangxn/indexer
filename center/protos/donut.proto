@@ -1,0 +1,129 @@
+syntax = "proto3";
+
+import "google/api/annotations.proto";
+import "google/protobuf/any.proto";
+
+package donut;
+option go_package = "./donut";
+
+service Donut {
+
+  rpc Search(SearchRequest) returns (BaseReply) {
+    option (google.api.http) = {
+      post : "/v1/common/search"
+      body : "*"
+    };
+  }
+}
+
+message SearchRequest { string query = 1; }
+
+message BaseReply {
+  int32 code = 1;
+  string msg = 2;
+  google.protobuf.Any data = 3;
+}
+
+message Account {
+  string id = 1;
+  int64 joinIn = 2;
+  int64 index = 3;
+  int64 holdersCount = 4;
+  int64 holdingsCount = 5;
+  string shareSupply = 6;
+  repeated Holder holdings = 7;
+  repeated Holder holders = 8;
+  string feeAmount = 9;
+  int64 captureCount = 10;
+  string totalCaptured = 11;
+  int64 donateCount = 12;
+  string totalDonated = 13;
+  string receivedDonate = 14;
+  string inscriptionFee = 15;
+}
+
+message Donut {
+  string id = 1;
+  int64 usersCount = 2;
+  string totalProtocolFee =  3;
+  string totalCreateFee =  4;
+  int64 buyCount =  5;
+  int64 sellCount =  6;
+  string totalValueCapture =  7;
+  string totalDonated =  8;
+  string totalFTCBurned =  9;
+  string totalInscriptionFee =  10;
+  int64 inscriptionFeePercent =  11;
+}
+
+message Holder {
+  string id = 1;
+  int64 createAt = 2;
+  Account holder = 3;
+  Account subject = 4;
+  string sharesOwned = 5;
+}
+
+message ValueCaptured {
+  string id = 1;
+  Account subject = 2;
+  Account investor = 3;
+  string amount = 4;
+  int64 index = 5;
+}
+
+message Trade {
+  string id = 1;
+  Account trader = 2;
+  Account subject = 3;
+  bool isBuy = 4;
+  string shareAmount = 5;
+  string ethAmount = 6;
+  string protocolEthAmount = 7;
+  string subjectEthAmount = 8;
+  string supply = 9;
+  int64 index = 10; 
+}
+
+message Inscription {
+  string id = 1;
+  int64 index = 2;
+  bytes inscription = 3;
+  string value = 4;
+  Account owner = 5;
+}
+
+message Src20 {
+  string id = 1;
+  int64 index = 2;
+  string tick = 3;
+  string max = 4;
+  string limit = 5;
+  string fee = 6;
+  string supply = 7;
+  int64 holderCount = 8;
+  bool isFinished = 9;
+}
+
+message Src20Balance {
+  string id = 1;
+  string tick = 2;
+  Account holder = 3;
+  string amount = 4;
+}
+
+message Donate {
+  string id = 1
+  Account subject = 2;
+  Account donator = 3;
+  string ethAmount = 4;
+  string recCShares = 5;
+  int64 tweetId = 6;
+  int64 round = 7;
+  int64 index = 8;
+}
+
+message Counter {
+  string id = 1;
+  int64 index = 2;
+}

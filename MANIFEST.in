@@ -1,0 +1,9 @@
+include requirements.txt
+include setup.py
+include pavement.py
+include paver-minilib.zip
+include restful_proxy.go
+include buildrpc.sh
+include config.json.simple
+include center/protos/donut.proto
+
