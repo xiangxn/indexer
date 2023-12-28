@@ -1,14 +1,18 @@
 #!/bin/bash
+echo "GOROOT: $GOROOT"
+echo "GOBIN: $GOBIN"
+echo "PROTOBUF: $PROTOBUF"
+
 if [ "$GOROOT" == "" ];then
-    GOROOT="$HOME/go"
+    GOROOT="/usr/local/go/bin"
 fi
 
 if [ "$GOBIN" == "" ];then
-    GOBIN="$HOME/go/bin"
+    GOBIN="/usr/local/go/bin/go"
 fi
 
 if [ "$PROTOBUF" == "" ];then
-    PROTOBUF="/usr/local/include"
+    PROTOBUF="/opt/homebrew/Cellar/protobuf/25.1/include"
 fi
 
 echo "GOROOT: $GOROOT"
