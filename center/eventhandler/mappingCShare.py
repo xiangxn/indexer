@@ -15,12 +15,16 @@ def handleCreateCshare(timestamp, event: EventData, contracts):
             'blockNumber'
         }
     """
+    print(event.address)
+    print(event.event)
     args = event.args
     subject = args.subject
     amount = args.amount
     createFee = args.createFee
 
+    print(1)
     donut = getDonut()
+    print(2, donut.id)
     kol = getUser(subject, timestamp)
     kol.shareSupply = str(amount)
 
@@ -46,7 +50,7 @@ def handleCreateCshare(timestamp, event: EventData, contracts):
     donut.save()
 
 def handleTrade(timestamp, event, contracts):
-
+    
     args = event.args
     trader = args.trader
     subject = args.subject

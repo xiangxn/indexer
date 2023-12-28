@@ -107,8 +107,8 @@ message Src20 {
 
 message Src20Balance {
   string id = 1;
-  Src20 tick = 2;
-  Account holder = 3;
+  string tick = 2;
+  string holder = 3;
   string amount = 4;
 }
 
