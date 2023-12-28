@@ -88,7 +88,7 @@ class Src20Balance(MongoengineObjectType):
     class Meta:
         model = Src20BalanceModel
         interfaces = (CustomNode, )
-        filter_fields = {"holder": ["in"]}
+        filter_fields = {"holder": ["in"], "tick": ["eq"]}
 
 
 class Donate(MongoengineObjectType):
