@@ -47,7 +47,7 @@ func run() error {
 	// Note: Make sure the gRPC server is running properly and accessible
 	mux := runtime.NewServeMux(runtime.WithIncomingHeaderMatcher(CustomMatcher))
 	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
-	err := gw.RegisterDonutHandlerFromEndpoint(ctx, mux, *grpcServerEndpoint, opts)
+	err := gw.RegisterDonutinsHandlerFromEndpoint(ctx, mux, *grpcServerEndpoint, opts)
 	if err != nil {
 		return err
 	}
