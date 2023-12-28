@@ -6,7 +6,7 @@ import "google/protobuf/any.proto";
 package donut;
 option go_package = "./donut";
 
-service Donut {
+service Donutins {
 
   rpc Search(SearchRequest) returns (BaseReply) {
     option (google.api.http) = {
@@ -42,7 +42,7 @@ message Account {
   string inscriptionFee = 15;
 }
 
-message Donutb {
+message Donut {
   string id = 1;
   int64 usersCount = 2;
   string totalProtocolFee =  3;
