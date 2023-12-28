@@ -118,7 +118,7 @@ message Donate {
   Account donator = 3;
   string ethAmount = 4;
   string recCShares = 5;
-  int64 tweetId = 6;
+  string tweetId = 6;
   int64 round = 7;
   int64 index = 8;
 }

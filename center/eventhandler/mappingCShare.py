@@ -19,13 +19,12 @@ def handleCreateCshare(timestamp, event: EventData, contracts):
     
     args = event.args
     subject = args.subject
-    amount = args.amount
+    amount = str(args.amount)
     createFee = args.createFee
 
-    print(1)
     donut = getDonut()
     kol = getUser(subject, timestamp)
-    kol.shareSupply = str(amount)
+    kol.shareSupply = amount
 
     donut.totalCreateFee = str(int(donut.totalCreateFee) + createFee)
 
@@ -48,7 +47,6 @@ def handleCreateCshare(timestamp, event: EventData, contracts):
     kol.save()
     holder.save()
     donut.save()
-    print(5, donut.totalCreateFee)
 
 
 def handleTrade(timestamp, event, contracts):

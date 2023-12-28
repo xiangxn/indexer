@@ -120,7 +120,7 @@ class Donate(Document):
     donator = ReferenceField('Account')
     ethAmount = StringField(required=True, default='0')
     recCShares = StringField(required=True, default='0')
-    tweetId = IntField(required=True, default=0)
+    tweetId = StringField(required=True, default='0')
     round = IntField(equired=True, default=0)
     index = IntField(equired=True, default=0)
 

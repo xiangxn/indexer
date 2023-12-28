@@ -812,25 +812,6 @@
         "type": "address"
       }
     ],
-    "name": "keyFundRatio",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
     "name": "keyHolding",
     "outputs": [
       {
@@ -927,32 +908,6 @@
       }
     ],
     "name": "sellShares",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_keyFundRatio",
-        "type": "uint256"
-      }
-    ],
-    "name": "setKeyFundRatio",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bool",
-        "name": "_keyFundRatioSettable",
-        "type": "bool"
-      }
-    ],
-    "name": "setkeyFundRatioSettable",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
