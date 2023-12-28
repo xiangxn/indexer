@@ -7,10 +7,6 @@ class PoolStatus(Enum):
     OPENED = 0
     CLOSED = 1
 
-
-@unique
-
-
 class Account(Document):
     meta = {"collection": "account"}
 
@@ -102,8 +98,9 @@ class Src20(Document):
     holderCount = IntField(required=True, default=0)
     isFinished = BooleanField(required=True, default=False)
 
+
 class Src20Balance(Document):
-    meta = {'collection', 'src20_balance'}
+    meta = {'collection': 'src20_balance'}
 
     id = StringField(required=True, primary_key=True)
     tick = ReferenceField('Src20')
@@ -112,7 +109,7 @@ class Src20Balance(Document):
 
 
 class Donate(Document):
-    meta = {'collection', 'donate'}
+    meta = {'collection': 'donate'}
 
     id = StringField(required=True, primary_key=True)
     subject = ReferenceField('Account')
@@ -125,7 +122,7 @@ class Donate(Document):
 
 
 class Counter(Document):
-    meta = {'collection', 'counter'}
+    meta = {'collection': 'counter'}
 
     id = StringField(required=True, primary_key=True)
     index = IntField(equired=True, default = 0)

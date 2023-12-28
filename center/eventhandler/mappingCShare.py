@@ -1,7 +1,8 @@
 from center.database.models import *
 from center.eventhandler.base import getUser, getDonut, getIndex, createId
+from web3.types import (EventData)
 
-def handleCreateCshare(timestamp, event, contracts):
+def handleCreateCshare(timestamp, event: EventData, contracts):
     """
     event = {
             'args'
@@ -15,7 +16,7 @@ def handleCreateCshare(timestamp, event, contracts):
         }
     """
     args = event.args
-    subject = args.subject.hex()
+    subject = args.subject
     amount = args.amount
     createFee = args.createFee
 
@@ -47,8 +48,8 @@ def handleCreateCshare(timestamp, event, contracts):
 def handleTrade(timestamp, event, contracts):
 
     args = event.args
-    trader = args.trader.hex()
-    subject = args.subject.hex()
+    trader = args.trader
+    subject = args.subject
     isBuy = args.isBuy
     supply = args.supply
     shareAmount = args.shareAmount
@@ -65,9 +66,9 @@ def handleTrade(timestamp, event, contracts):
     kol.feeAmount = str(int(kol.feeAmount) + int(subjectFee))
     kol.shareSupply = str(supply)
     holderId = trader + subject
-    holder = Holder.objects(id:holderId).first()
+    holder = Holder.objects(id=holderId).first()
     if holder is None:
-        holder = Holder(id: holderId)
+        holder = Holder(id= holderId)
         holder.holder = trader
         holder.createAt = timestamp
 
@@ -97,8 +98,8 @@ def handleTrade(timestamp, event, contracts):
 
 def handleValueCaptured(timestamp, event, contracts):
     args = event.args
-    subject = args.subject.hex()
-    investor = args.investor.hex()
+    subject = args.subject
+    investor = args.investor
     amount = args.amount 
 
     user = getUser(subject, timestamp)
@@ -110,7 +111,7 @@ def handleValueCaptured(timestamp, event, contracts):
     donut.totalValueCapture = str(int(donut.totalValueCapture) + int(amount))
 
     captureId = createId(event)
-    capture = ValueCaptured(id: captureId)
+    capture = ValueCaptured(id= captureId)
     capture.subject = subject
     capture.investor = investor
     capture.amount = str(amount)
@@ -122,8 +123,8 @@ def createTrade(event):
     tradeId = createId(event)
     trade = Trade(id=tradeId)
     trade.index = getIndex('trade')
-    trade.trader = event.args.trader.hex()
-    trade.subject = event.args.subject.hex()
+    trade.trader = event.args.trader
+    trade.subject = event.args.subject
     trade.isBuy = event.args.isBuy
     trade.shareAmount = event.args.shareAmount
     trade.ethAmount = event.args.ethAmount

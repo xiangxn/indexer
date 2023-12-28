@@ -4,14 +4,14 @@ import time
 from center.logger import Logger
 import time
 import json
-from center.rpc.donut_pb2_grpc import add_DonutServicer_to_server, DonutServicer
+from center.rpc.donut_pb2_grpc import add_DonutinsServicer_to_server, DonutinsServicer
 from center.rpc.donut_pb2 import BaseReply
 from center.rpc.google.protobuf.wrappers_pb2 import StringValue
 import mongoengine
 from center.database.schema import schema
 
 
-class Server(DonutServicer):
+class Server(DonutinsServicer):
 
     def __init__(self, config):
         self.logger = Logger()
@@ -68,7 +68,7 @@ def donut_run(config):
 
     # 将对应的任务处理函数添加到rpc server中
     donutSvr = Server(config)
-    add_DonutServicer_to_server(donutSvr, server)
+    add_DonutinsServicer_to_server(donutSvr, server)
 
     # 这里使用的非安全接口，世界gRPC支持TLS/SSL安全连接，以及各种鉴权机制
     port = "[::]:{}".format(config['grpc_port'])

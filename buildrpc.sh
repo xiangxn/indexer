@@ -13,8 +13,8 @@ echo "GOROOT: $GOROOT"
 echo "GOBIN: $GOBIN"
 echo "PROTOBUF: $PROTOBUF"
 
-if [ ! -d "./RestfulProxy/donut/" ];then
-    mkdir ./RestfulProxy/donut
+if [ ! -d "./RestfulProxy/donutins/" ];then
+    mkdir ./RestfulProxy/donutins
 fi
 
 if [ ! -d "./include/" ];then
@@ -62,9 +62,9 @@ echo "编译Go的GRPC......"
 
 python3 -m grpc_tools.protoc -I ./center/protos \
     -I $GOOGLE_API \
-    --go_out ./RestfulProxy/donut --go_opt paths=source_relative \
-    --go-grpc_out ./RestfulProxy/donut --go-grpc_opt paths=source_relative \
-    --grpc-gateway_out ./RestfulProxy/donut \
+    --go_out ./RestfulProxy/donutins --go_opt paths=source_relative \
+    --go-grpc_out ./RestfulProxy/donutins --go-grpc_opt paths=source_relative \
+    --grpc-gateway_out ./RestfulProxy/donutins \
     --grpc-gateway_opt logtostderr=true \
     --grpc-gateway_opt paths=source_relative \
     ./center/protos/donut.proto

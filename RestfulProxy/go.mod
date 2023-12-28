@@ -18,4 +18,4 @@ require (
 	google.golang.org/protobuf v1.27.1 // indirect
 )
 
-replace donut v0.0.1 => ./donut
+replace donutins v0.0.1 => ./donutins
