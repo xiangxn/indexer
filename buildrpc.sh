@@ -7,7 +7,9 @@ if [ "$GOBIN" == "" ];then
     GOBIN="$HOME/go/bin"
 fi
 
-PROTOBUF="/usr/local/Cellar/protobuf/3.19.4/include"
+if [ "$PROTOBUF" == "" ];then
+    PROTOBUF="/usr/local/include"
+fi
 
 echo "GOROOT: $GOROOT"
 echo "GOBIN: $GOBIN"
