@@ -106,7 +106,7 @@ class Src20Balance(Document):
     meta = {'collection', 'src20_balance'}
 
     id = StringField(required=True, primary_key=True)
-    tick = ReferenceField('Src20Balance')
+    tick = ReferenceField('Src20')
     holder = ReferenceField('Account')
     amount = StringField(required=True, default = '0')
 
