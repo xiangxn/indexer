@@ -134,7 +134,7 @@ def clean(options):
     path('.cache').rmtree()
     path('./center/rpc').rmtree()
     os.system("rm logs/*.log")
-    os.system("rm RestfulProxy/donut/*.go")
+    os.system("rm RestfulProxy/donutins/*.go")
 
 
 # [[[endsection]]]

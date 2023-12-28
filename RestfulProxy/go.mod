@@ -3,6 +3,7 @@ module restful_proxy
 go 1.17
 
 require (
+	donutins v0.0.1
 	github.com/buger/jsonparser v1.1.1
 	github.com/golang/glog v1.0.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.8.0
