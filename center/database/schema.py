@@ -29,8 +29,8 @@ class Account(MongoengineObjectType):
     class Meta:
         model = AccountModel
         interfaces = (CustomNode, )
-        filter_fields = {"createdAt": ["gt", "lt"]}
-        ordery_by = "-createdAt"
+        filter_fields = {"index": ["gt", "lt"]}
+        ordery_by = "-index"
 
 
 class Donut(MongoengineObjectType):
@@ -45,8 +45,8 @@ class Holder(MongoengineObjectType):
     class Meta:
         model = HolderModel
         interfaces = (CustomNode, )
-        filter_fields = {"timestamp": ["gt", "lt"]}
-        order_by = "-timestamp"
+        filter_fields = {"createAt": ["gt", "lt"]}
+        order_by = "-createAt"
 
 
 class ValueCaptured(MongoengineObjectType):
@@ -54,8 +54,8 @@ class ValueCaptured(MongoengineObjectType):
     class Meta:
         model = ValueCapturedModel
         interfaces = (CustomNode, )
-        filter_fields = {"timestamp": ["lt", "gt"]}
-        ordery_by = "-timestamp"
+        filter_fields = {"index": ["lt", "gt"]}
+        ordery_by = "-index"
 
 
 class Trade(MongoengineObjectType):
@@ -63,17 +63,15 @@ class Trade(MongoengineObjectType):
     class Meta:
         model = TradeModel
         interfaces = (CustomNode, )
-        filter_fields = {"id": ["in"], "createdAt": ["lt", "gt"]}
-        ordery_by = "-createdAt"
+        filter_fields = {"index": ["lt", "gt"]}
+        ordery_by = "-index"
 
 
-class SrcInscription20(MongoengineObjectType):
+class Inscription(MongoengineObjectType):
 
     class Meta:
         model = InscriptionModel
         interfaces = (CustomNode, )
-        filter_fields = {"timestamp": ["lt", "gt"]}
-        ordery_by = "-timestamp"
 
 
 class Src20(MongoengineObjectType):
@@ -81,8 +79,8 @@ class Src20(MongoengineObjectType):
     class Meta:
         model = Src20Model
         interfaces = (CustomNode, )
-        filter_fields = {"timestamp": ["lt", "gt"]}
-        ordery_by = "-timestamp"
+        filter_fields = {"index": ["lt", "gt"], "tick": ["eq"]}
+        ordery_by = "-index"
 
 
 class Src20Balance(MongoengineObjectType):
@@ -90,8 +88,7 @@ class Src20Balance(MongoengineObjectType):
     class Meta:
         model = Src20BalanceModel
         interfaces = (CustomNode, )
-        filter_fields = {"timestamp": ["lt", "gt"]}
-        ordery_by = "-timestamp"
+        filter_fields = {"holder": ["in"]}
 
 
 class Donate(MongoengineObjectType):
@@ -99,8 +96,8 @@ class Donate(MongoengineObjectType):
     class Meta:
         model = DonateModel
         interfaces = (CustomNode, )
-        filter_fields = {"timestamp": ["lt", "gt"]}
-        ordery_by = "-timestamp"
+        filter_fields = {"index": ["lt", "gt"]}
+        ordery_by = "-index"
 
 
 class Counter(MongoengineObjectType):
@@ -108,8 +105,6 @@ class Counter(MongoengineObjectType):
     class Meta:
         model = CounterModel
         interfaces = (CustomNode, )
-        filter_fields = {"timestamp": ["lt", "gt"]}
-        ordery_by = "-timestamp"
 
 
 class Query(graphene.ObjectType):
