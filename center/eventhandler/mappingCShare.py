@@ -26,17 +26,21 @@ def handleCreateCshare(timestamp, event: EventData, contracts):
     donut = getDonut()
     print(2, donut.id)
     kol = getUser(subject, timestamp)
+    print(3, kol.id)
     kol.shareSupply = str(amount)
 
     donut.totalCreateFee = str(int(donut.totalCreateFee) + createFee)
 
     holderId = subject + subject
+    subjectUser = getUser(subject, timestamp)
     holder = Holder.objects(id=holderId).first()
     if holder is None:
         holder = Holder(id=holderId)
-        holder.holder = subject
-        holder.subject = subject
+        holder.holder = subjectUser
+        holder.subject = subjectUser
         holder.createAt = event.blockNumber
+    
+    print(4, holder.id)
     
     holder.sharesOwned = amount
     donut.buyCount = donut.buyCount + 1
@@ -45,12 +49,15 @@ def handleCreateCshare(timestamp, event: EventData, contracts):
     kol.holdersCount = 1
     kol.holders = [holder]
 
+    print(41)
+
     kol.save()
     holder.save()
     donut.save()
+    print(5, donut.totalCreateFee)
 
 def handleTrade(timestamp, event, contracts):
-    
+
     args = event.args
     trader = args.trader
     subject = args.subject
@@ -102,8 +109,8 @@ def handleTrade(timestamp, event, contracts):
 
 def handleValueCaptured(timestamp, event, contracts):
     args = event.args
-    subject = args.subject
-    investor = args.investor
+    subject = getUser(args.subject, timestamp)
+    investor = getUser(args.investor, timestamp)
     amount = args.amount 
 
     user = getUser(subject, timestamp)
