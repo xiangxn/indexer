@@ -2,6 +2,7 @@ from center.database.models import *
 from center.eventhandler.base import getUser, getDonut, getIndex, createId
 from web3.types import (EventData)
 
+
 def handleCreateCshare(timestamp, event: EventData, contracts):
     """
     event = {
@@ -34,11 +35,11 @@ def handleCreateCshare(timestamp, event: EventData, contracts):
     holder = Holder.objects(id=holderId).first()
     if holder is None:
         holder = Holder(id=holderId)
-        holder.holder = subject
-        holder.subject = subject
+        holder.holder = Account(id=subject)
+        holder.subject = Account(id=subject)
         holder.createAt = event.blockNumber
-    
-    holder.sharesOwned = amount
+
+    holder.sharesOwned = str(amount)
     donut.buyCount = donut.buyCount + 1
     kol.holdingsCount = 1
     kol.holdings = [holder]
@@ -49,8 +50,9 @@ def handleCreateCshare(timestamp, event: EventData, contracts):
     holder.save()
     donut.save()
 
+
 def handleTrade(timestamp, event, contracts):
-    
+
     args = event.args
     trader = args.trader
     subject = args.subject
@@ -72,7 +74,7 @@ def handleTrade(timestamp, event, contracts):
     holderId = trader + subject
     holder = Holder.objects(id=holderId).first()
     if holder is None:
-        holder = Holder(id= holderId)
+        holder = Holder(id=holderId)
         holder.holder = trader
         holder.createAt = timestamp
 
@@ -92,7 +94,8 @@ def handleTrade(timestamp, event, contracts):
             user.holdingsCount -= 1
             kol.holdersCount -= 1
 
-    donut.totalProtocolFee = str(int(donut.totalProtocolFee) + int(protocolFee))
+    donut.totalProtocolFee = str(
+        int(donut.totalProtocolFee) + int(protocolFee))
 
     donut.save()
     user.save()
@@ -104,7 +107,7 @@ def handleValueCaptured(timestamp, event, contracts):
     args = event.args
     subject = args.subject
     investor = args.investor
-    amount = args.amount 
+    amount = args.amount
 
     user = getUser(subject, timestamp)
     user.captureCount += 1
@@ -115,9 +118,9 @@ def handleValueCaptured(timestamp, event, contracts):
     donut.totalValueCapture = str(int(donut.totalValueCapture) + int(amount))
 
     captureId = createId(event)
-    capture = ValueCaptured(id= captureId)
-    capture.subject = subject
-    capture.investor = investor
+    capture = ValueCaptured(id=captureId)
+    capture.subject = Account(id=subject)
+    capture.investor = Account(id=investor)
     capture.amount = str(amount)
     capture.index = getIndex('valueCapture')
     capture.save()
@@ -127,12 +130,12 @@ def createTrade(event):
     tradeId = createId(event)
     trade = Trade(id=tradeId)
     trade.index = getIndex('trade')
-    trade.trader = event.args.trader
-    trade.subject = event.args.subject
+    trade.trader = Account(id=event.args.trader)
+    trade.subject = Account(id=event.args.subject)
     trade.isBuy = event.args.isBuy
-    trade.shareAmount = event.args.shareAmount
-    trade.ethAmount = event.args.ethAmount
-    trade.protocolEthAmount = event.args.protocolEthAmount
-    trade.subjectEthAmount = event.args.subjectEthAmount
-    trade.supply = event.args.supply
+    trade.shareAmount = str(event.args.shareAmount)
+    trade.ethAmount = str(event.args.ethAmount)
+    trade.protocolEthAmount = str(event.args.protocolEthAmount)
+    trade.subjectEthAmount = str(event.args.subjectEthAmount)
+    trade.supply = str(event.args.supply)
     trade.save()
