@@ -1,4 +1,7 @@
 #!/bin/bash
+if [ "$GOROOT" == "" ];then
+    GOROOT="$HOME/go"
+fi
 
 if [ "$GOBIN" == "" ];then
     GOBIN="$HOME/go/bin"

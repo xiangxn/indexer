@@ -31,7 +31,7 @@ class Account(Document):
     inscriptionFee = StringField(required=True, default='0')
 
 
-class Donut(Document):
+class Donutb(Document):
     meta = {"collection": "donut"}
 
     id = StringField(required=True, primary_key=True)

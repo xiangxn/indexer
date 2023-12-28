@@ -1,5 +1,5 @@
 from center.database.models import *
-from center.eventhandler.base import getUser, getDonut, getIndex, createId
+from center.eventhandler.base import getUser, getDonutb, getIndex, createId
 
 def handleCreateCshare(timestamp, event, contracts):
     """
@@ -19,7 +19,7 @@ def handleCreateCshare(timestamp, event, contracts):
     amount = args.amount
     createFee = args.createFee
 
-    donut = getDonut()
+    donut = getDonutb()
     kol = getUser(subject, timestamp)
     kol.shareSupply = str(amount)
 
@@ -58,7 +58,7 @@ def handleTrade(timestamp, event, contracts):
 
     user = getUser(trader, timestamp)
     kol = getUser(subject, timestamp)
-    donut = getDonut()
+    donut = getDonutb()
 
     createTrade(event)
 
@@ -106,7 +106,7 @@ def handleValueCaptured(timestamp, event, contracts):
     user.totalCaptured = str(int(user.totalCaptured) + int(amount))
     user.save()
 
-    donut = getDonut()
+    donut = getDonutb()
     donut.totalValueCapture = str(int(donut.totalValueCapture) + int(amount))
 
     captureId = createId(event)
@@ -116,7 +116,7 @@ def handleValueCaptured(timestamp, event, contracts):
     capture.amount = str(amount)
     capture.index = getIndex('valueCapture')
     capture.save()
-    
+
 
 def createTrade(event):
     tradeId = createId(event)

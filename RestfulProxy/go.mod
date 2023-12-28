@@ -7,7 +7,6 @@ require (
 	github.com/golang/glog v1.0.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.8.0
 	google.golang.org/grpc v1.45.0
-	donut v0.0.1
 )
 
 require (

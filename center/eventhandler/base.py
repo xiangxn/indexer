@@ -37,17 +37,17 @@ def getUser(id: str, timestamp: str) -> Account:
         user.index = getIndex('user')
         user.holders = []
         user.holdings = []
-        donut = getDonut()
+        donut = getDonutb()
         donut.usersCount = donut.usersCount + 1
         donut.save()
         user.save()
     return user
 
 
-def getDonut() -> Donut:
-    donut = Donut.objects(id='Donut').first()
+def getDonutb() -> Donutb:
+    donut = Donutb.objects(id='Donutb').first()
     if donut is None:
-        donut = Donut(id='Donut')
+        donut = Donutb(id='Donutb')
         donut.save()
     return donut
 

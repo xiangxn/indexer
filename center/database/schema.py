@@ -1,10 +1,10 @@
 import graphene
 from graphene_mongo import MongoengineObjectType
-from .fields import CustomNode, DonutField, DonutConnectionField
+from .fields import CustomNode, DonutbField, DonutbConnectionField
 
 from .logs import EventLog as EventLogModel
 from .models import Account as AccountModel
-from .models import Donut as DonutModel
+from .models import Donutb as DonutbModel
 from .models import Holder as HolderModel
 from .models import ValueCaptured as ValueCapturedModel
 from .models import Trade as TradeModel
@@ -33,10 +33,10 @@ class Account(MongoengineObjectType):
         ordery_by = "-createdAt"
 
 
-class Donut(MongoengineObjectType):
+class Donutb(MongoengineObjectType):
 
     class Meta:
-        model = DonutModel
+        model = DonutbModel
         interfaces = (CustomNode, )
 
 
@@ -127,8 +127,8 @@ class Query(graphene.ObjectType):
     accounts = DonutConnectionField(Account)
 
     # Donut
-    donut = DonutField(Donut)
-    donuts = DonutConnectionField(Donut)
+    donutb = DonutbField(Donutb)
+    donutbs = DonutbConnectionField(Donutb)
 
     # Holder
     holder = DonutField(Holder)

@@ -49,7 +49,7 @@ class CustomNode(graphene.relay.Node):
         return None
 
 
-class DonutField(graphene.Field):
+class DonutbField(graphene.Field):
 
     def __init__(self,
                  type,
@@ -77,7 +77,7 @@ class DonutField(graphene.Field):
         return self.model.objects.get(id=id)
 
 
-class DonutConnectionField(MongoengineConnectionField):
+class DonutbConnectionField(MongoengineConnectionField):
 
     def __init__(self, type, *args, **kwargs):
         kwargs.setdefault("orderBy", graphene.String())

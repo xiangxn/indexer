@@ -42,7 +42,7 @@ message Account {
   string inscriptionFee = 15;
 }
 
-message Donut {
+message Donutb {
   string id = 1;
   int64 usersCount = 2;
   string totalProtocolFee =  3;
@@ -113,7 +113,7 @@ message Src20Balance {
 }
 
 message Donate {
-  string id = 1
+  string id = 1;
   Account subject = 2;
   Account donator = 3;
   string ethAmount = 4;
