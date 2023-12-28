@@ -2,6 +2,7 @@ from center.database.models import *
 from center.eventhandler.base import getUser, getDonut, getIndex, createId
 from web3.types import (EventData)
 
+
 def handleCreateCshare(timestamp, event: EventData, contracts):
     """
     event = {
@@ -15,8 +16,7 @@ def handleCreateCshare(timestamp, event: EventData, contracts):
             'blockNumber'
         }
     """
-    print(event.address)
-    print(event.event)
+    
     args = event.args
     subject = args.subject
     amount = args.amount
@@ -24,9 +24,7 @@ def handleCreateCshare(timestamp, event: EventData, contracts):
 
     print(1)
     donut = getDonut()
-    print(2, donut.id)
     kol = getUser(subject, timestamp)
-    print(3, kol.id)
     kol.shareSupply = str(amount)
 
     donut.totalCreateFee = str(int(donut.totalCreateFee) + createFee)
@@ -38,9 +36,7 @@ def handleCreateCshare(timestamp, event: EventData, contracts):
         holder = Holder(id=holderId)
         holder.holder = subjectUser
         holder.subject = subjectUser
-        holder.createAt = event.blockNumber
-    
-    print(4, holder.id)
+        holder.createAt = timestamp
     
     holder.sharesOwned = amount
     donut.buyCount = donut.buyCount + 1
@@ -49,12 +45,11 @@ def handleCreateCshare(timestamp, event: EventData, contracts):
     kol.holdersCount = 1
     kol.holders = [holder]
 
-    print(41)
-
     kol.save()
     holder.save()
     donut.save()
     print(5, donut.totalCreateFee)
+
 
 def handleTrade(timestamp, event, contracts):
 
@@ -72,15 +67,15 @@ def handleTrade(timestamp, event, contracts):
     kol = getUser(subject, timestamp)
     donut = getDonut()
 
-    createTrade(event)
+    createTrade(timestamp, event)
 
     kol.feeAmount = str(int(kol.feeAmount) + int(subjectFee))
     kol.shareSupply = str(supply)
     holderId = trader + subject
     holder = Holder.objects(id=holderId).first()
     if holder is None:
-        holder = Holder(id= holderId)
-        holder.holder = trader
+        holder = Holder(id=holderId)
+        holder.holder = user
         holder.createAt = timestamp
 
     if isBuy:
@@ -99,7 +94,8 @@ def handleTrade(timestamp, event, contracts):
             user.holdingsCount -= 1
             kol.holdersCount -= 1
 
-    donut.totalProtocolFee = str(int(donut.totalProtocolFee) + int(protocolFee))
+    donut.totalProtocolFee = str(
+        int(donut.totalProtocolFee) + int(protocolFee))
 
     donut.save()
     user.save()
@@ -109,11 +105,10 @@ def handleTrade(timestamp, event, contracts):
 
 def handleValueCaptured(timestamp, event, contracts):
     args = event.args
-    subject = getUser(args.subject, timestamp)
+    user = getUser(args.subject, timestamp)
     investor = getUser(args.investor, timestamp)
     amount = args.amount 
 
-    user = getUser(subject, timestamp)
     user.captureCount += 1
     user.totalCaptured = str(int(user.totalCaptured) + int(amount))
     user.save()
@@ -122,24 +117,25 @@ def handleValueCaptured(timestamp, event, contracts):
     donut.totalValueCapture = str(int(donut.totalValueCapture) + int(amount))
 
     captureId = createId(event)
-    capture = ValueCaptured(id= captureId)
-    capture.subject = subject
+    capture = ValueCaptured(id=captureId)
+    capture.subject = user
     capture.investor = investor
     capture.amount = str(amount)
     capture.index = getIndex('valueCapture')
     capture.save()
 
 
-def createTrade(event):
+def createTrade(timestamp, event):
     tradeId = createId(event)
     trade = Trade(id=tradeId)
     trade.index = getIndex('trade')
-    trade.trader = event.args.trader
-    trade.subject = event.args.subject
+
+    trade.trader = getUser(event.args.trader, timestamp)
+    trade.subject = getUser(event.args.subject, timestamp)
     trade.isBuy = event.args.isBuy
-    trade.shareAmount = event.args.shareAmount
-    trade.ethAmount = event.args.ethAmount
-    trade.protocolEthAmount = event.args.protocolEthAmount
-    trade.subjectEthAmount = event.args.subjectEthAmount
-    trade.supply = event.args.supply
+    trade.shareAmount = str(event.args.shareAmount)
+    trade.ethAmount = str(event.args.ethAmount)
+    trade.protocolEthAmount = str(event.args.protocolEthAmount)
+    trade.subjectEthAmount = str(event.args.subjectEthAmount)
+    trade.supply = str(event.args.supply)
     trade.save()
