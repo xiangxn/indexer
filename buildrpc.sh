@@ -12,7 +12,7 @@ if [ "$GOBIN" == "" ];then
 fi
 
 if [ "$PROTOBUF" == "" ];then
-    PROTOBUF="/opt/homebrew/Cellar/protobuf/25.1/include"
+    PROTOBUF="/usr/local/include"
 fi
 
 echo "GOROOT: $GOROOT"
