@@ -22,8 +22,8 @@ docs/api
 paver-minilib.zip
 
 config.json
-donut/*.go
-donutins/*.go
+RestfulProxy/donut/*.go
+RestfulProxy/donutins/*.go
 restful_proxy
 cache-state.json
 include/
