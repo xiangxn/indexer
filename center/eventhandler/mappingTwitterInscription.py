@@ -1,7 +1,7 @@
 from center.database.models import *
 from web3.types import (EventData)
 from center.decorator import new_contract
-from center.eventhandler.base import getDonut, createId, getUser, getIndex, getHex
+from center.eventhandler.base import getDonut, createId, getUser, getIndex, getHex, getAddress
 import json
 import sys
 import re
@@ -9,11 +9,15 @@ import re
 def handleInscriptionData(timestamp, event, contracts):
     id = str(event.args.id)
     data = getHex(event.args.data)
-    value = event.args.value
-    sender = event.args.sender
+    # value = event.args.value
+    # sender = event.args.sender
+
+    value = 1000000000000000000
+    sender = "0x742d35Cc6634C0532925a3b844Bc454e4438f44a"
 
     inscription = Inscription.objects(id=id).first()
     if inscription is not None:
+        print('inscritpion exist')
         return
     
     user = getUser(sender, timestamp)
@@ -28,12 +32,15 @@ def handleInscriptionData(timestamp, event, contracts):
     # slice start "0x"
     data = data[2:]
 
-    print('data:', data)
     obj = parseData(data)
     if obj is None:
         if len(data) <= 40:
             return
-        subject = '0x' + data[:40]
+        subject = data[:40]
+        subject = getAddress(subject)
+        if not subject:
+            print('wrong subject address format')
+            return
         data = data[40:]
         obj = parseData(data)
         if obj is None:
@@ -57,24 +64,30 @@ def handleInscriptionData(timestamp, event, contracts):
 
     
     if op == "deploy":
+        print('deploy')
         try:
-            max = data["max"]
-            lim = data["lim"]
-            fee = data["fee"]
+            max = obj["max"]
+            lim = obj["lim"]
+            fee = obj["fee"]
 
             if int(lim) > int(max):
+                print("deploy wrong lim")
                 return
             int(fee)
         except KeyError:
+            print("keyError")
             return
         except ValueError:
+            print("ValueError")
             return
         
         if not isinstance(max, str) or not isinstance(lim, str) or not isinstance(fee, str):
+            print('deploy: value is not str')
             return
         
         src20 = Src20.objects(id=tick).first()
         if src20:
+            print('deploy: src deployed')
             return
 
         src20 = Src20(id=tick)
@@ -86,35 +99,45 @@ def handleInscriptionData(timestamp, event, contracts):
         src20.holderCount = 0
         src20.index = getIndex('src20')
         src20.isFinished = False
+        src20.createAt = timestamp
         src20.save()
         return
 
     if op == "mint":
+        print("mint")
         kol = Account.objects(id=subject).first()
         if kol is None or kol.shareSupply == '0':
+            print("mint: subject has no cshare")
             return
         
         try:
             amt = obj["amt"]
             if not isinstance(amt, str):
+                print("mint: amt is not strm")
                 return
             int(amt)
-        except ValueError:
-            return
         except KeyError:
+            print("keyError")
+            return
+        except ValueError:
+            print("ValueError")
             return
         
         src20 = Src20.objects(id=tick).first()
         if src20 is None:
+            print('mint: src not deployed')
             return
         
         if int(src20.max) < (int(src20.supply) + int(amt)):
+            print("mint: wrong int number")
             return
         
         if int(value) < int(src20.fee):
+            print("mint: insuffient fee")
             return
         
         if int(amt) > int(src20.limit):
+            print('mint: wrong amount')
             return
 
         src20.supply = str(int(src20.supply) + int(amt))
@@ -137,7 +160,7 @@ def handleInscriptionData(timestamp, event, contracts):
         if src20.supply == src20.max:
             src20.isFinished = True
 
-        src20Balance.amount = str(int(src20Balance.amount) + amt)
+        src20Balance.amount = str(int(src20Balance.amount) + int(amt))
 
         kol.save()
         donut.save()
@@ -146,12 +169,68 @@ def handleInscriptionData(timestamp, event, contracts):
         return
 
     if op == "transfer":
-        pass
+        print('transfer')
+        try:
+            amt = obj["amt"]
+            to = obj["to"]
+
+            if int(src20.limit) < int(amt):
+                print('transfer: wrong amount')
+                return
+            to = getAddress(to)
+            if not to:
+                print('transfer: wrong to address')
+                return
+        except KeyError:
+            print("keyError")
+            return
+        except ValueError:
+            print("ValueError")
+            return
+
+        src20 = Src20.objects(id=tick).first()
+        if src20 is None:
+            print("transfer: src20 not deployed")
+            return
+
+        toAccount = getUser(to, timestamp)
+
+        fromBalanceId = tick + '-' + sender
+        toBalanceId = tick + '-' + to
+
+        fromBalance = Src20Balance.objects(id=fromBalanceId).first()
+
+        if fromBalance is None:
+            print("transfer: no balance")
+            return
+
+        if int(fromBalance.amount) < int(amt):
+            print("transfer: insuffient balance")
+            return
+
+        toBalance = Src20Balance.objects(id=toBalanceId).first()
+        if toBalance is None:
+            toBalance = Src20Balance(id=toBalanceId)
+            toBalance.tick = tick
+            toBalance.holder = toAccount
+            toBalance.amount = '0'
+            src20.holderCount += 1
+
+        toBalance.amount = str(int(toBalance.amount) + int(amt))
+        fromBalance.amount = str(int(fromBalance.amount) - int(amt))
+        if fromBalance.amount == '0':
+            src20.holderCount -= 1
+
+        fromBalance.save()
+        toBalance.save()
+        src20.save()
     
+    print(" ")
+
 
 def parseData(data):
     try:
-        s = bytes.fromhex(data).encoding('utf-8')
+        s = bytes.fromhex(data).decode('utf-8')
         print("hex to string:", s)
         o = json.loads(s)
         return o

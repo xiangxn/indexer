@@ -1,7 +1,7 @@
 from hexbytes import HexBytes
 from center.database.models import *
 from web3.types import (EventData)
-
+from web3 import Web3
 
 def createId(event: EventData) -> str:
     return "{}-{}".format(event.transactionHash.hex(), event.logIndex)
@@ -17,6 +17,16 @@ def getHex(data) -> str:
     elif isinstance(data, str):
         return f"0x{data.encode().hex()}"
     return str(data)
+
+
+def getAddress(address):
+    try:
+        # 尝试用Web3来将字符串解析为地址
+        web3 = Web3()
+        return web3.toChecksumAddress(address)
+    except ValueError:
+        # 如果解析失败，则不是有效的以太坊地址
+        return False
 
 
 def getIndex(id: str) -> str:

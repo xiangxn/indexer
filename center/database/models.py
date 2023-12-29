@@ -101,6 +101,7 @@ class Src20(Document):
     supply = StringField(required=True, default='0')
     holderCount = IntField(required=True, default=0)
     isFinished = BooleanField(required=True, default=False)
+    createAt = IntField()
 
 
 class Src20Balance(Document):

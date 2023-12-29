@@ -103,6 +103,7 @@ message Src20 {
   string supply = 7;
   int64 holderCount = 8;
   bool isFinished = 9;
+  int64 createAt = 10;
 }
 
 message Src20Balance {
