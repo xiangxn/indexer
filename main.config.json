@@ -6,13 +6,13 @@
     "contracts": {
         "CShare": "0xd9210830afDEe5C8e5120dCC7a0C4Fa23997Ef25",
         "Donut": "0xe86305b400E69ffFb5CF8Fce2a90659174777A79",
-        "TwitterInscription": "0x59102Eb8eE1296c2793e3F8E59197683963Bff69"
+        "TwitterInscription": "0xB6d039AC7556d7606712BE36287490E64Bdc20e9"
     },
     "sync_cfg": {
         "chain_api": [
-            "https://mainnet.base.org/"
+            "https://rpc-1.bevm.io/"
         ],
-        "start_block": 8168584,
+        "start_block": 12443611,
         "max_chunk_scan_size": 2000,
         "max_request_retries": 10,
         "request_interval_sec": 1.0,
@@ -23,8 +23,8 @@
     },
     "mongo": {
         "host": "mongodb://root:data-center-2022@mongo:27017/",
-        "db": "donut-inscription-test",
-        "log": "donut_event_log-test"
+        "db": "donut-inscription",
+        "log": "donut_event_log"
     },
     "discord": {
         "bot_server": "104.152.208.28:10086",
