@@ -10,7 +10,7 @@
     },
     "sync_cfg": {
         "chain_api": [
-            "https://rpc-1.bevm.io/"
+            "https://rpc-2.bevm.io/"
         ],
         "start_block": 12500563,
         "max_chunk_scan_size": 2000,
