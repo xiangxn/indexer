@@ -26,6 +26,7 @@ class Account(Document):
     totalDonated = StringField(required=True, default='0')
     receivedDonate = StringField(required=True, default='0')
     inscriptionFee = StringField(required=True, default='0')
+    deployIncome = StringField(required=True, default='0')
 
 
 class Donut(Document):
@@ -101,6 +102,8 @@ class Src20(Document):
     supply = StringField(required=True, default='0')
     holderCount = IntField(required=True, default=0)
     isFinished = BooleanField(required=True, default=False)
+    deployer = StringField(required=True, default='0x00')
+    deployerFeeRatio = IntField(required=True, default=0)
     createAt = IntField()
 
 

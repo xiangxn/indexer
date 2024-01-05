@@ -6,6 +6,7 @@ import json
 import sys
 import re
 
+
 def handleInscriptionData(timestamp, event, contracts):
     id = str(event.args.id)
     data = getHex(event.args.data)
@@ -19,7 +20,7 @@ def handleInscriptionData(timestamp, event, contracts):
     if inscription is not None:
         print('inscritpion exist')
         return
-    
+
     user = getUser(sender, timestamp)
 
     inscription = Inscription(id=id)
@@ -45,7 +46,7 @@ def handleInscriptionData(timestamp, event, contracts):
         obj = parseData(data)
         if obj is None:
             return
-        
+
     try:
         p = obj["p"]
         op = obj["op"]
@@ -62,29 +63,31 @@ def handleInscriptionData(timestamp, event, contracts):
     except KeyError:
         return
 
-    
     if op == "deploy":
         print('deploy')
+        deployerFeeRatio = 0
         try:
             max = obj["max"]
             lim = obj["lim"]
             fee = obj["fee"]
+            deployerFeeRatio = obj['deployerFeeRatio']
 
             if int(lim) > int(max):
                 print("deploy wrong lim")
                 return
             int(fee)
+            deployerFeeRatio = int(deployerFeeRatio)
         except KeyError:
             print("keyError")
             return
         except ValueError:
             print("ValueError")
             return
-        
+
         if not isinstance(max, str) or not isinstance(lim, str) or not isinstance(fee, str):
             print('deploy: value is not str')
             return
-        
+
         src20 = Src20.objects(id=tick).first()
         if src20:
             print('deploy: src deployed')
@@ -100,6 +103,8 @@ def handleInscriptionData(timestamp, event, contracts):
         src20.index = getIndex('src20')
         src20.isFinished = False
         src20.createAt = timestamp
+        src20.deployer = sender
+        src20.deployerFeeRatio = deployerFeeRatio
         src20.save()
         return
 
@@ -109,7 +114,7 @@ def handleInscriptionData(timestamp, event, contracts):
         if kol is None or kol.shareSupply == '0':
             print("mint: subject has no cshare")
             return
-        
+
         try:
             amt = obj["amt"]
             if not isinstance(amt, str):
@@ -122,31 +127,32 @@ def handleInscriptionData(timestamp, event, contracts):
         except ValueError:
             print("ValueError")
             return
-        
+
         src20 = Src20.objects(id=tick).first()
         if src20 is None:
             print('mint: src not deployed')
             return
-        
+
         if int(src20.max) < (int(src20.supply) + int(amt)):
             print("mint: wrong int number")
             return
-        
+
         if int(value) < int(src20.fee):
             print("mint: insuffient fee")
             return
-        
+
         if int(amt) > int(src20.limit):
             print('mint: wrong amount')
             return
 
+        deployer = Account.objects(id=src20.deployer).first()
+
         src20.supply = str(int(src20.supply) + int(amt))
 
-        donut = getDonut()
-        donutFee = int(int(value) * donut.inscriptionFeePercent / 10000)
-        kolFee = int(value) - donutFee
+        deployerFee = int(int(value) * src20.deployerFeeRatio / 10000)
+        kolFee = int(value) - deployerFee
         kol.inscriptionFee = str(int(kol.inscriptionFee) + kolFee)
-        donut.totalInscriptionFee = str(int(donut.totalInscriptionFee) + donutFee)
+        deployer.deployIncome = str(int(deployer.deployIncome) + deployerFee)
 
         src20BalanceId = tick + '-' + sender
         src20Balance = Src20Balance.objects(id=src20BalanceId).first()
@@ -156,20 +162,26 @@ def handleInscriptionData(timestamp, event, contracts):
             src20Balance.holder = sender
             src20Balance.amount = "0"
             src20.holderCount = src20.holderCount + 1
-        
+
         if src20.supply == src20.max:
             src20.isFinished = True
 
         src20Balance.amount = str(int(src20Balance.amount) + int(amt))
 
         kol.save()
-        donut.save()
+        deployer.save()
         src20Balance.save()
         src20.save()
         return
 
     if op == "transfer":
         print('transfer')
+
+        src20 = Src20.objects(id=tick).first()
+        if src20 is None:
+            print("transfer: src20 not deployed")
+            return
+
         try:
             amt = obj["amt"]
             to = obj["to"]
@@ -186,11 +198,6 @@ def handleInscriptionData(timestamp, event, contracts):
             return
         except ValueError:
             print("ValueError")
-            return
-
-        src20 = Src20.objects(id=tick).first()
-        if src20 is None:
-            print("transfer: src20 not deployed")
             return
 
         toAccount = getUser(to, timestamp)
@@ -224,7 +231,7 @@ def handleInscriptionData(timestamp, event, contracts):
         fromBalance.save()
         toBalance.save()
         src20.save()
-    
+
     print(" ")
 
 
@@ -243,4 +250,3 @@ def handleFeePercentChanged(timestamp, event, contracts):
     donut = getDonut()
     donut.inscriptionFeePercent = event.args.newPercent
     donut.save()
-
