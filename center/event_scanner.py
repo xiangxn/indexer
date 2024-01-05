@@ -433,6 +433,8 @@ class EventScanner:
         self.logger.debug(f"Querying eth_getLogs with the following parameters: {args}")
         logs = web3.eth.get_logs(args)
         # print("logs:", logs)
+        if len(logs):
+            self.logger.error(f"logs: {logs}")
         all_events: List[EventData] = []
         for log in logs:
             evt = self.events.getEventData(web3, contract_name, log)

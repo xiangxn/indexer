@@ -21,9 +21,14 @@
         "chain_reorg_safety_blocks": 6,
         "scan_database_step_size": 1000
     },
-    "mongo": {
+    "mongo1": {
         "host": "mongodb://root:data-center-2022@mongo:27017/",
         "db": "donut-inscription",
+        "log": "donut_event_log"
+    },
+    "mongo": {
+        "host": "mongodb://localhost:27017/",
+        "db": "donut_center",
         "log": "donut_event_log"
     },
     "discord": {
