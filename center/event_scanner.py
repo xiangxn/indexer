@@ -434,7 +434,7 @@ class EventScanner:
         logs = web3.eth.get_logs(args)
         # print("logs:", logs)
         if len(logs):
-            self.logger.error(f"logs: {logs}")
+            self.logger.error(f"logs={from_block}-{to_block}: {logs}")
         all_events: List[EventData] = []
         for log in logs:
             evt = self.events.getEventData(web3, contract_name, log)
