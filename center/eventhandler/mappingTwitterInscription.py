@@ -75,7 +75,7 @@ def handleInscriptionData(timestamp, event, contracts):
 
         deployer = Account.objects(id=sender).first()
         if deployer is None or deployer.shareSupply == '0':
-            print("mint: deployer has not created cshare")
+            print("deploy: deployer has not created cshare")
             return
 
         if not isinstance(max, str) or not isinstance(lim, str) or not isinstance(fee, str):
