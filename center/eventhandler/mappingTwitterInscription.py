@@ -17,6 +17,11 @@ def handleInscriptionData(timestamp, event, contracts):
     # sender = "0x742d35Cc6634C0532925a3b844Bc454e4438f44a"
 
     inscription = Inscription.objects(id=id).first()
+    print(id)
+    print(data)
+    print(value)
+    print(sender)
+
     if inscription is not None:
         print('inscritpion exist')
         return
@@ -233,13 +238,8 @@ def handleInscriptionData(timestamp, event, contracts):
 def parseData(data):
     try:
         o = json.loads(data)
+        print(o)
         return o
     except Exception as e:
         print(e)
         return None
-
-
-def handleFeePercentChanged(timestamp, event, contracts):
-    donut = getDonut()
-    donut.inscriptionFeePercent = event.args.newPercent
-    donut.save()

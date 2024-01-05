@@ -5,50 +5,10 @@
         "internalType": "address",
         "name": "_cshare",
         "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_feeAddress",
-        "type": "address"
       }
     ],
     "stateMutability": "nonpayable",
     "type": "constructor"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "owner",
-        "type": "address"
-      }
-    ],
-    "name": "OwnableInvalidOwner",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      }
-    ],
-    "name": "OwnableUnauthorizedAccount",
-    "type": "error"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "newPercent",
-        "type": "uint256"
-      }
-    ],
-    "name": "FeePercentChanged",
-    "type": "event"
   },
   {
     "anonymous": false,
@@ -60,10 +20,22 @@
         "type": "uint256"
       },
       {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      },
+      {
         "indexed": false,
-        "internalType": "bytes",
+        "internalType": "string",
         "name": "data",
-        "type": "bytes"
+        "type": "string"
       }
     ],
     "name": "InscriptionData",
@@ -108,27 +80,20 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "_feeAddress",
-        "type": "address"
+        "internalType": "string",
+        "name": "tick",
+        "type": "string"
       }
     ],
-    "name": "adminSetFeeAddress",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
+    "name": "checkValidTick",
+    "outputs": [
       {
-        "internalType": "uint256",
-        "name": "_feePercent",
-        "type": "uint256"
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
       }
     ],
-    "name": "adminSetFeePercent",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "pure",
     "type": "function"
   },
   {
@@ -146,32 +111,6 @@
         "internalType": "contract ICShare",
         "name": "",
         "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "feeAddress",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "feePercent",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -208,6 +147,35 @@
     "name": "renounceOwnership",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "name": "tickInfo",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "deployed",
+        "type": "bool"
+      },
+      {
+        "internalType": "address",
+        "name": "deployer",
+        "type": "address"
+      },
+      {
+        "internalType": "uint16",
+        "name": "deployerFeeRatio",
+        "type": "uint16"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {

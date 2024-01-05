@@ -40,6 +40,7 @@ message Account {
   string totalDonated = 13;
   string receivedDonate = 14;
   string inscriptionFee = 15;
+  string deployIncome = 16;
 }
 
 message Donut {
@@ -104,6 +105,8 @@ message Src20 {
   int64 holderCount = 8;
   bool isFinished = 9;
   int64 createAt = 10;
+  string deployer = 11;
+  int64 deployerFeeRatio = 12;
 }
 
 message Src20Balance {
