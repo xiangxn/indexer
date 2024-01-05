@@ -6,7 +6,7 @@
     "contracts": {
         "CShare": "0xAcbBCdFF7B05781E6fa0CEc18E09807ecB05F1B3",
         "Donut": "0xb8D62B1031Aa99387566776F2AA572Aa2C09E501",
-        "TwitterInscription": "0x550eE5Ea221b38EEAab54Dff00A55Fe25555D5Be"
+        "TwitterInscription": "0x8dAe8ccbF9Ae24dc24CCa1FD8dEc8A088A95657A"
     },
     "sync_cfg": {
         "chain_api": [
