@@ -79,7 +79,7 @@ class Src20(MongoengineObjectType):
     class Meta:
         model = Src20Model
         interfaces = (CustomNode, )
-        filter_fields = {"index": ["lt", "gt", "in"], "tick": ["eq"]}
+        filter_fields = {"index": ["lt", "gt", "in"], "tick": ["eq"], "holderCount": ["lt", "gt"], "deployerFeeRatio": ["lt", "gt"]}
         ordery_by = "-index"
 
 
