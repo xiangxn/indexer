@@ -9,12 +9,12 @@ import re
 
 def handleInscriptionData(timestamp, event, contracts):
     id = str(event.args.id)
-    data = getHex(event.args.data)
-    # value = event.args.value
-    # sender = event.args.sender
+    data = event.args.data
+    value = event.args.value
+    sender = event.args.sender
 
-    value = 1000000000000000000
-    sender = "0x742d35Cc6634C0532925a3b844Bc454e4438f44a"
+    # value = 1000000000000000000
+    # sender = "0x742d35Cc6634C0532925a3b844Bc454e4438f44a"
 
     inscription = Inscription.objects(id=id).first()
     if inscription is not None:
@@ -30,22 +30,10 @@ def handleInscriptionData(timestamp, event, contracts):
     inscription.owner = user
     inscription.save()
 
-    # slice start "0x"
-    data = data[2:]
-
     obj = parseData(data)
+
     if obj is None:
-        if len(data) <= 40:
-            return
-        subject = data[:40]
-        subject = getAddress(subject)
-        if not subject:
-            print('wrong subject address format')
-            return
-        data = data[40:]
-        obj = parseData(data)
-        if obj is None:
-            return
+        return
 
     try:
         p = obj["p"]
@@ -84,6 +72,11 @@ def handleInscriptionData(timestamp, event, contracts):
             print("ValueError")
             return
 
+        deployer = Account.objects(id=sender).first()
+        if deployer is None or deployer.shareSupply == '0':
+            print("mint: deployer has not created cshare")
+            return
+
         if not isinstance(max, str) or not isinstance(lim, str) or not isinstance(fee, str):
             print('deploy: value is not str')
             return
@@ -110,13 +103,13 @@ def handleInscriptionData(timestamp, event, contracts):
 
     if op == "mint":
         print("mint")
-        kol = Account.objects(id=subject).first()
-        if kol is None or kol.shareSupply == '0':
-            print("mint: subject has no cshare")
-            return
 
         try:
             amt = obj["amt"]
+            subject = obj["promoter"]
+            subject = getAddress(subject)
+            if not subject:
+                return
             if not isinstance(amt, str):
                 print("mint: amt is not strm")
                 return
@@ -126,6 +119,12 @@ def handleInscriptionData(timestamp, event, contracts):
             return
         except ValueError:
             print("ValueError")
+            return
+
+        
+        kol = Account.objects(id=subject).first()
+        if kol is None or kol.shareSupply == '0':
+            print("mint: subject has no cshare")
             return
 
         src20 = Src20.objects(id=tick).first()
@@ -185,10 +184,6 @@ def handleInscriptionData(timestamp, event, contracts):
         try:
             amt = obj["amt"]
             to = obj["to"]
-
-            if int(src20.limit) < int(amt):
-                print('transfer: wrong amount')
-                return
             to = getAddress(to)
             if not to:
                 print('transfer: wrong to address')
@@ -237,9 +232,7 @@ def handleInscriptionData(timestamp, event, contracts):
 
 def parseData(data):
     try:
-        s = bytes.fromhex(data).decode('utf-8')
-        print("hex to string:", s)
-        o = json.loads(s)
+        o = json.loads(data)
         return o
     except Exception as e:
         print(e)
