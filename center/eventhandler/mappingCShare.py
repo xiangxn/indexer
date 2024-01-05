@@ -19,7 +19,7 @@ def handleCreateCshare(timestamp, event: EventData, contracts):
     
     args = event.args
     subject = args.subject
-    amount = str(args.amount)
+    amount = str(int(args.amount) + 1000000000000000000)
     createFee = args.createFee
 
     donut = getDonut()
