@@ -269,6 +269,8 @@ class EventScanner:
                     start_fetch_block = last_fetch_block + 1
                 else:
                     break
+        # 对logs按blockNumber与logIndex排序
+        eventLogs.sort(key=lambda o: (o.blockNumber, o.logIndex))
         return last_block_time, eventLogs
 
     def new_dynamic_address(self, contract: str, address: str):
@@ -368,7 +370,7 @@ class EventScanner:
             processed_event_count += new_event_count
             # 打印进度
             if progress_callback:
-                progress_callback(start_block, end_block, current_block, end_block_timestamp, chunk_size - (estimated_end_block - current_end), new_event_count)
+                progress_callback(start_block, end_block, current_block, end_block_timestamp, chunk_size - (estimated_end_block-current_end), new_event_count)
             # 尝试猜测下一次要通过 `get_logs` API 获取多少块
             chunk_size = self.estimate_next_chunk_size(chunk_size, new_event_count)
             # 设置下一个块开始的位置
@@ -406,7 +408,7 @@ class EventScanner:
                         f"Retrying events for block range {start_block} - {end_block} ({end_block - start_block + 1}) failed with '{e}', {i} retrying in {delay} seconds"
                     )
                     # 减少 `getBlocks` 范围
-                    end_block = start_block + ((end_block - start_block) // 2)
+                    end_block = start_block + ((end_block-start_block) // 2)
                     # 让 JSON-RPC 恢复例如重启
                     time.sleep(delay)
                     i += 1
@@ -433,8 +435,8 @@ class EventScanner:
         self.logger.debug(f"Querying eth_getLogs with the following parameters: {args}")
         logs = web3.eth.get_logs(args)
         # print("logs:", logs)
-        if len(logs):
-            self.logger.error(f"logs={from_block}-{to_block}: {logs}")
+        # if len(logs):
+        #     self.logger.error(f"logs={from_block}-{to_block}: {logs}")
         all_events: List[EventData] = []
         for log in logs:
             evt = self.events.getEventData(web3, contract_name, log)
