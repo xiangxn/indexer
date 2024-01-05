@@ -9,7 +9,7 @@ class PoolStatus(Enum):
 
 
 class Account(Document):
-    meta = {"collection": "account"}
+    meta = { "collection": "account"}
 
     id = StringField(required=True, primary_key=True)
     joinIn = IntField(required=True, default=0)
@@ -30,7 +30,7 @@ class Account(Document):
 
 
 class Donut(Document):
-    meta = {"collection": "donut"}
+    meta = { "collection": "donut"}
 
     id = StringField(required=True, primary_key=True)
     usersCount = IntField(required=True, default=0)
@@ -46,7 +46,7 @@ class Donut(Document):
 
 
 class Holder(Document):
-    meta = {"collection": "Holder"}
+    meta = { "collection": "Holder"}
 
     id = StringField(required=True, primary_key=True)
     createAt = IntField(required=True, default=0)
@@ -56,7 +56,7 @@ class Holder(Document):
 
 
 class ValueCaptured(Document):
-    meta = {"collection": "value_captured"}
+    meta = { "collection": "value_captured"}
 
     id = StringField(required=True, primary_key=True)
     subject = ReferenceField("Account")
@@ -66,7 +66,7 @@ class ValueCaptured(Document):
 
 
 class Trade(Document):
-    meta = {"collection": "trade"}
+    meta = { "collection": "trade"}
 
     id = StringField(required=True, primary_key=True)
     trader = ReferenceField("Account")
@@ -81,7 +81,7 @@ class Trade(Document):
 
 
 class Inscription(Document):
-    meta = {"collection": "inscription"}
+    meta = { "collection": "inscription"}
 
     id = StringField(required=True, primary_key=True)
     index = IntField(required=True, default=0)
@@ -91,7 +91,7 @@ class Inscription(Document):
 
 
 class Src20(Document):
-    meta = {"collection": "src20"}
+    meta = { "collection": "src20"}
 
     id = StringField(required=True, primary_key=True)
     index = IntField(required=True, default=0)
@@ -102,13 +102,13 @@ class Src20(Document):
     supply = StringField(required=True, default='0')
     holderCount = IntField(required=True, default=0)
     isFinished = BooleanField(required=True, default=False)
+    createAt = IntField()
     deployer = StringField(required=True, default='0x00')
     deployerFeeRatio = IntField(required=True, default=0)
-    createAt = IntField()
 
 
 class Src20Balance(Document):
-    meta = {'collection': 'src20_balance'}
+    meta = { 'collection': 'src20_balance'}
 
     id = StringField(required=True, primary_key=True)
     tick = StringField(required=True, default='0')
@@ -117,7 +117,7 @@ class Src20Balance(Document):
 
 
 class Donate(Document):
-    meta = {'collection': 'donate'}
+    meta = { 'collection': 'donate'}
 
     id = StringField(required=True, primary_key=True)
     subject = ReferenceField('Account')
@@ -130,7 +130,7 @@ class Donate(Document):
 
 
 class Counter(Document):
-    meta = {'collection': 'counter'}
+    meta = { 'collection': 'counter'}
 
     id = StringField(required=True, primary_key=True)
     index = IntField(equired=True, default=0)

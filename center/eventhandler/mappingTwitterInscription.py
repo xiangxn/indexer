@@ -122,7 +122,7 @@ def handleInscriptionData(timestamp, event, contracts):
             print("ValueError")
             return
 
-        
+
         kol = Account.objects(id=subject).first()
         if kol is None or kol.shareSupply == '0':
             print("mint: subject has no cshare")
