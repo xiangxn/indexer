@@ -188,11 +188,18 @@ def handleInscriptionData(timestamp, event, contracts):
             if not to:
                 print('transfer: wrong to address')
                 return
+            if (int(amt) < 1):
+                print("transfer nothing")
+                return
         except KeyError:
             print("keyError")
             return
         except ValueError:
             print("ValueError")
+            return
+
+        if sender == to:
+            print("ignore self transfer")
             return
 
         toAccount = getUser(to, timestamp)
@@ -214,7 +221,7 @@ def handleInscriptionData(timestamp, event, contracts):
         if toBalance is None:
             toBalance = Src20Balance(id=toBalanceId)
             toBalance.tick = tick
-            toBalance.holder = toAccount
+            toBalance.holder = to
             toBalance.amount = '0'
             src20.holderCount += 1
 
