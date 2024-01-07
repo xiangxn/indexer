@@ -1,12 +1,6 @@
 [
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_ft",
-        "type": "address"
-      }
-    ],
+    "inputs": [],
     "stateMutability": "nonpayable",
     "type": "constructor"
   },
@@ -17,12 +11,6 @@
         "indexed": true,
         "internalType": "address",
         "name": "subject",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "ftSubject",
         "type": "address"
       },
       {
@@ -169,43 +157,6 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": true,
-        "internalType": "address",
-        "name": "subject",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "ftSubject",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "bool",
-        "name": "isBuy",
-        "type": "bool"
-      },
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "ethAmount",
-        "type": "uint256"
-      }
-    ],
-    "name": "TradeKey",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
         "indexed": false,
         "internalType": "address",
         "name": "account",
@@ -309,19 +260,6 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "ftSubject",
-        "type": "address"
-      }
-    ],
-    "name": "bindFtSubject",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
         "name": "subject",
         "type": "address"
       },
@@ -370,11 +308,6 @@
   },
   {
     "inputs": [
-      {
-        "internalType": "address",
-        "name": "ftSubject",
-        "type": "address"
-      },
       {
         "internalType": "uint256",
         "name": "amount",
@@ -477,38 +410,6 @@
   {
     "inputs": [],
     "name": "donutFeePercent",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "ft",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "name": "ftKeyFund",
     "outputs": [
       {
         "internalType": "uint256",
@@ -775,25 +676,6 @@
         "type": "address"
       }
     ],
-    "name": "keyFundRatio",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
     "name": "keyHolding",
     "outputs": [
       {
@@ -867,55 +749,11 @@
       },
       {
         "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "sellFTKey",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "subject",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
         "name": "shareAmount",
         "type": "uint256"
       }
     ],
     "name": "sellShares",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_keyFundRatio",
-        "type": "uint256"
-      }
-    ],
-    "name": "setKeyFundRatio",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bool",
-        "name": "_keyFundRatioSettable",
-        "type": "bool"
-      }
-    ],
-    "name": "setkeyFundRatioSettable",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

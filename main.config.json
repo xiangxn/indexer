@@ -4,15 +4,15 @@
     "graphql_port": 5000,
     "grpc_host": "grpc",
     "contracts": {
-        "CShare": "0xAcbBCdFF7B05781E6fa0CEc18E09807ecB05F1B3",
-        "Donut": "0xb8D62B1031Aa99387566776F2AA572Aa2C09E501",
-        "TwitterInscription": "0x8dAe8ccbF9Ae24dc24CCa1FD8dEc8A088A95657A"
+        "CShare": "0xd9210830afDEe5C8e5120dCC7a0C4Fa23997Ef25",
+        "Donut": "0xe86305b400E69ffFb5CF8Fce2a90659174777A79",
+        "TwitterInscription": "0xA8163DD0C5cbdd28028219AD873aa6d7510e2829"
     },
     "sync_cfg": {
         "chain_api": [
-            "https://rpc-2.bevm.io/"
+            "https://testnet.bevm.io/rpc"
         ],
-        "start_block": 12500563,
+        "start_block": 376000,
         "max_chunk_scan_size": 2000,
         "max_request_retries": 10,
         "request_interval_sec": 1.0,
@@ -23,8 +23,8 @@
     },
     "mongo": {
         "host": "mongodb://root:data-center-2022@mongo:27017/",
-        "db": "donut-inscription",
-        "log": "donut_event_log"
+        "db": "donut_bevm_test",
+        "log": "donut_event_log_test"
     },
     "discord": {
         "bot_server": "104.152.208.28:10086",
