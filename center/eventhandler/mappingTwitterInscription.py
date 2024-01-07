@@ -75,7 +75,7 @@ def handleInscriptionData(timestamp, event, contracts):
 
         deployer = Account.objects(id=sender).first()
         if deployer is None or deployer.shareSupply == '0':
-            print("deploy: deployer has not created cshare")
+            print("deploy: deployer has not created cshare", sender, deployer.shareSupply)
             return
 
         if not isinstance(max, str) or not isinstance(lim, str) or not isinstance(fee, str):
@@ -121,7 +121,6 @@ def handleInscriptionData(timestamp, event, contracts):
         except ValueError:
             print("ValueError")
             return
-
 
         kol = Account.objects(id=subject).first()
         if kol is None or kol.shareSupply == '0':
@@ -189,11 +188,18 @@ def handleInscriptionData(timestamp, event, contracts):
             if not to:
                 print('transfer: wrong to address')
                 return
+            if (int(amt) < 1):
+                print("transfer nothing")
+                return
         except KeyError:
             print("keyError")
             return
         except ValueError:
             print("ValueError")
+            return
+
+        if sender == to:
+            print("ignore self transfer")
             return
 
         toAccount = getUser(to, timestamp)
@@ -215,7 +221,7 @@ def handleInscriptionData(timestamp, event, contracts):
         if toBalance is None:
             toBalance = Src20Balance(id=toBalanceId)
             toBalance.tick = tick
-            toBalance.holder = toAccount
+            toBalance.holder = to
             toBalance.amount = '0'
             src20.holderCount += 1
 
