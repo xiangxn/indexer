@@ -105,6 +105,7 @@ class Src20(Document):
     createAt = IntField()
     deployer = StringField(required=True, default='0x00')
     deployerFeeRatio = IntField(required=True, default=0)
+    progress = IntField(required=True, default=0)
 
 
 class Src20Balance(Document):
@@ -123,7 +124,7 @@ class Donate(Document):
     subject = ReferenceField('Account')
     donator = ReferenceField('Account')
     ethAmount = StringField(required=True, default='0')
-    recCShares = StringField(required=True, default='0')
+    recIPShares = StringField(required=True, default='0')
     tweetId = StringField(required=True, default='0')
     round = IntField(equired=True, default=0)
     index = IntField(equired=True, default=0)

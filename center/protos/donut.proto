@@ -107,6 +107,7 @@ message Src20 {
   int64 createAt = 10;
   string deployer = 11;
   int64 deployerFeeRatio = 12;
+  int64 progress = 13;
 }
 
 message Src20Balance {
@@ -121,7 +122,7 @@ message Donate {
   Account subject = 2;
   Account donator = 3;
   string ethAmount = 4;
-  string recCShares = 5;
+  string recIPShares = 5;
   string tweetId = 6;
   int64 round = 7;
   int64 index = 8;

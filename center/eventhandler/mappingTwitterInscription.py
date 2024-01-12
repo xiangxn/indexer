@@ -75,7 +75,7 @@ def handleInscriptionData(timestamp, event, contracts):
 
         deployer = Account.objects(id=sender).first()
         if deployer is None or deployer.shareSupply == '0':
-            print("deploy: deployer has not created cshare", sender, deployer.shareSupply)
+            print("deploy: deployer has not created ipshare", sender, deployer.shareSupply)
             return
 
         if not isinstance(max, str) or not isinstance(lim, str) or not isinstance(fee, str):
@@ -124,7 +124,7 @@ def handleInscriptionData(timestamp, event, contracts):
 
         kol = Account.objects(id=subject).first()
         if kol is None or kol.shareSupply == '0':
-            print("mint: subject has no cshare")
+            print("mint: subject has no ipshare")
             return
 
         src20 = Src20.objects(id=tick).first()
@@ -164,6 +164,8 @@ def handleInscriptionData(timestamp, event, contracts):
 
         if src20.supply == src20.max:
             src20.isFinished = True
+
+        src20.progress = int(src20.supply) * 10000 // int(src20.max)
 
         src20Balance.amount = str(int(src20Balance.amount) + int(amt))
 

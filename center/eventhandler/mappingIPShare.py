@@ -3,7 +3,7 @@ from center.eventhandler.base import getUser, getDonut, getIndex, createId
 from web3.types import (EventData)
 
 
-def handleCreateCshare(timestamp, event: EventData, contracts):
+def handleCreateIPshare(timestamp, event: EventData, contracts):
     """
     event = {
             'args'

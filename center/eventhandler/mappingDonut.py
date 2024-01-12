@@ -35,7 +35,7 @@ def createDonate(timestamp, event, contracts):
     donate.donator = getUser(event.args.donator, timestamp)
     donate.subject = getUser(event.args.subject, timestamp)
     donate.ethAmount = str(event.args.ethAmount)
-    donate.recCShares = str(event.args.recCShares)
+    donate.recIPShares = str(event.args.recIPShares)
     donate.tweetId = str(event.args.tweetId)
     donate.round = event.args.round
     donate.save()

@@ -4,21 +4,21 @@
     "graphql_port": 5000,
     "grpc_host": "grpc",
     "contracts": {
-        "CShare": "0xd9210830afDEe5C8e5120dCC7a0C4Fa23997Ef25",
-        "Donut": "0xe86305b400E69ffFb5CF8Fce2a90659174777A79",
-        "TwitterInscription": "0xA8163DD0C5cbdd28028219AD873aa6d7510e2829"
+        "IPShare": "0x29E0A08C7C9608458f00159152F985A34682E27e",
+        "Donut": "0x550eE5Ea221b38EEAab54Dff00A55Fe25555D5Be",
+        "TwitterInscription": "0x6d84082EcC048065A9f43e400a1FF70730Efa521"
     },
     "sync_cfg": {
         "chain_api": [
             "https://testnet.bevm.io/rpc"
         ],
-        "start_block": 376000,
+        "start_block": 445452,
         "max_chunk_scan_size": 2000,
         "max_request_retries": 10,
         "request_interval_sec": 1.0,
         "request_retry_seconds": 3.0,
         "realtime_scan_interval_sec": 5,
-        "chain_reorg_safety_blocks": 6,
+        "chain_reorg_safety_blocks": 3,
         "scan_database_step_size": 1000
     },
     "mongo": {

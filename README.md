@@ -34,7 +34,7 @@
     {
         "grpc_port": "50000",
         "contracts": {
-            "CShare": "0xd9210830afDEe5C8e5120dCC7a0C4Fa23997Ef25",
+            "IPShare": "0xd9210830afDEe5C8e5120dCC7a0C4Fa23997Ef25",
             "Donut": "0xe86305b400E69ffFb5CF8Fce2a90659174777A79",
             "TwitterInscription": "0x59102Eb8eE1296c2793e3F8E59197683963Bff69"
         },
