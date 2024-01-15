@@ -10,7 +10,7 @@
     },
     "sync_cfg": {
         "chain_api": [
-            "https://testnet.bevm.io/rpc"
+            "https://rpc-2.bevm.io/"
         ],
         "start_block": 12667241,
         "max_chunk_scan_size": 2000,
