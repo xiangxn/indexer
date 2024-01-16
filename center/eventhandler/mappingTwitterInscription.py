@@ -53,7 +53,7 @@ def handleInscriptionData(timestamp, event, contracts):
         return
 
     if op == "deploy":
-        print('deploy')
+        # print('deploy')
         deployerFeeRatio = 0
         try:
             max = obj["max"]
@@ -103,7 +103,7 @@ def handleInscriptionData(timestamp, event, contracts):
         return
 
     if op == "mint":
-        print("mint")
+        # print("mint")
 
         try:
             amt = obj["amt"]
