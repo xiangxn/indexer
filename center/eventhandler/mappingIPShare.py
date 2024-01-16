@@ -19,7 +19,7 @@ def handleCreateIPshare(timestamp, event: EventData, contracts):
     
     args = event.args
     subject = args.subject
-    amount = str(int(args.amount) + 1000000000000000000)
+    amount = str(args.amount)
     createFee = args.createFee
 
     donut = getDonut()
