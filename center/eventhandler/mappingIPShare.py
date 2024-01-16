@@ -16,7 +16,7 @@ def handleCreateIPshare(timestamp, event: EventData, contracts):
             'blockNumber'
         }
     """
-    
+
     args = event.args
     subject = args.subject
     amount = str(args.amount)
@@ -36,13 +36,13 @@ def handleCreateIPshare(timestamp, event: EventData, contracts):
         holder.holder = subjectUser
         holder.subject = subjectUser
         holder.createAt = timestamp
-    
+
     holder.sharesOwned = amount
     donut.buyCount = donut.buyCount + 1
     kol.holdingsCount = 1
-    kol.holdings = [holder]
+    kol.update(push__holdings=holder)
     kol.holdersCount = 1
-    kol.holders = [holder]
+    kol.update(push__holders=holder)
 
     kol.save()
     holder.save()
@@ -74,6 +74,7 @@ def handleTrade(timestamp, event, contracts):
     if holder is None:
         holder = Holder(id=holderId)
         holder.holder = user
+        holder.subject = kol
         holder.createAt = timestamp
 
     if isBuy:
@@ -92,20 +93,19 @@ def handleTrade(timestamp, event, contracts):
             user.holdingsCount -= 1
             kol.holdersCount -= 1
 
-    donut.totalProtocolFee = str(
-        int(donut.totalProtocolFee) + int(protocolFee))
+    donut.totalProtocolFee = str(int(donut.totalProtocolFee) + int(protocolFee))
 
     donut.save()
     user.save()
     kol.save()
-    holder.save
+    holder.save()
 
 
 def handleValueCaptured(timestamp, event, contracts):
     args = event.args
     user = getUser(args.subject, timestamp)
     investor = getUser(args.investor, timestamp)
-    amount = args.amount 
+    amount = args.amount
 
     user.captureCount += 1
     user.totalCaptured = str(int(user.totalCaptured) + int(amount))
