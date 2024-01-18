@@ -20,7 +20,7 @@ class EventLog(MongoengineObjectType):
     class Meta:
         model = EventLogModel
         interfaces = (CustomNode, )
-        filter_fields = {"blockNumber": ["gt", "lt"]}
+        filter_fields = { "blockNumber": ["gt", "lt"] }
         ordery_by = "-blockNumber"
 
 
@@ -29,7 +29,7 @@ class Account(MongoengineObjectType):
     class Meta:
         model = AccountModel
         interfaces = (CustomNode, )
-        filter_fields = {"index": ["gt", "lt"]}
+        filter_fields = { "index": ["gt", "lt"] }
         ordery_by = "-index"
 
 
@@ -45,7 +45,7 @@ class Holder(MongoengineObjectType):
     class Meta:
         model = HolderModel
         interfaces = (CustomNode, )
-        filter_fields = {"createAt": ["gt", "lt"]}
+        filter_fields = { "createAt": ["gt", "lt"], "sharesOwned": ["ne"] }
         order_by = "-createAt"
 
 
@@ -54,7 +54,7 @@ class ValueCaptured(MongoengineObjectType):
     class Meta:
         model = ValueCapturedModel
         interfaces = (CustomNode, )
-        filter_fields = {"index": ["lt", "gt"]}
+        filter_fields = { "index": ["lt", "gt"] }
         ordery_by = "-index"
 
 
@@ -63,7 +63,7 @@ class Trade(MongoengineObjectType):
     class Meta:
         model = TradeModel
         interfaces = (CustomNode, )
-        filter_fields = {"index": ["lt", "gt"]}
+        filter_fields = { "index": ["lt", "gt"] }
         ordery_by = "-index"
 
 
@@ -79,7 +79,14 @@ class Src20(MongoengineObjectType):
     class Meta:
         model = Src20Model
         interfaces = (CustomNode, )
-        filter_fields = {"index": ["lt", "gt", "in"], "id": ["in"], "tick": ["eq", "in"], "holderCount": ["lt", "gt"], "deployerFeeRatio": ["lt", "gt"], "progress": ["lt", "gt"]}
+        filter_fields = {
+            "index": ["lt", "gt", "in"],
+            "id": ["in"],
+            "tick": ["eq", "in"],
+            "holderCount": ["lt", "gt"],
+            "deployerFeeRatio": ["lt", "gt"],
+            "progress": ["lt", "gt"]
+        }
         ordery_by = "-index"
 
 
@@ -88,7 +95,7 @@ class Src20Balance(MongoengineObjectType):
     class Meta:
         model = Src20BalanceModel
         interfaces = (CustomNode, )
-        filter_fields = {"holder": ["eq"], "tick": ["eq"]}
+        filter_fields = { "holder": ["eq"], "tick": ["eq"] }
 
 
 class Donate(MongoengineObjectType):
@@ -96,7 +103,7 @@ class Donate(MongoengineObjectType):
     class Meta:
         model = DonateModel
         interfaces = (CustomNode, )
-        filter_fields = {"index": ["lt", "gt"]}
+        filter_fields = { "index": ["lt", "gt"] }
         ordery_by = "-index"
 
 
