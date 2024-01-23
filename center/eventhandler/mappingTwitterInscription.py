@@ -225,6 +225,8 @@ def handleInscriptionData(timestamp, event, contracts):
             toBalance.tick = tick
             toBalance.holder = to
             toBalance.amount = '0'
+
+        if toBalance.amount == '0':
             src20.holderCount += 1
 
         toBalance.amount = str(int(toBalance.amount) + int(amt))
