@@ -123,6 +123,8 @@ def clean(options):
     destdir.rmtree()
     destdir = path(CODE_DIRECTORY + '/eventhandler/__pycache__')
     destdir.rmtree()
+    destdir = path(CODE_DIRECTORY + '/database/__pycache__')
+    destdir.rmtree()
     destdir = path('docs/' + options.builddir)
     destdir.rmtree()
     destdir = path('docs/api')
