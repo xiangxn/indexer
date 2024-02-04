@@ -1,8 +1,4 @@
 #!/bin/bash
-echo "GOROOT: $GOROOT"
-echo "GOBIN: $GOBIN"
-echo "PROTOBUF: $PROTOBUF"
-
 if [ "$GOROOT" == "" ];then
     GOROOT="/usr/local/go/bin"
 fi

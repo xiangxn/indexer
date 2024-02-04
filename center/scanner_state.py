@@ -1,16 +1,17 @@
 import json
 import os
 import time
-from typing import Callable, List, Optional, Tuple
-from center.event_scanner import EventScannerState
+from typing import Callable, List, Optional
+from center.base_scanner_state import BaseScannerState
 import mongoengine
 from center.events import Events
 from center.logger import Logger
-from center.utils import ROOT_PATH
-from center.database.logs import EventLog, from_json, save_logs, delLogsByBlock
+from center.database.logs import delLogsByBlock
+from center.database.block import BlockLog, EventInfo
+from web3.types import TxData
 
 
-class ScannerState(EventScannerState):
+class ScannerState(BaseScannerState):
     """存储扫描块的状态和所有事件"""
 
     def __init__(self, config, events: Events, logger: Logger = None) -> None:
@@ -30,14 +31,14 @@ class ScannerState(EventScannerState):
     def _init_db(self):
         """连接mongoengine"""
         self.db_data = mongoengine.connect(db=self.db_config['db'], host=self.db_config['host'])
-        self.db_logs = mongoengine.connect(db=self.db_config['log'], host=self.db_config['host'], alias="event_logs")
+        self.db_logs = mongoengine.connect(db=self.db_config['log'], host=self.db_config['host'], alias="block_logs")
 
     def reset(self):
         """重设无扫描的初始状态"""
         addr = {}
         for k, v in self.contracts_config.items():
             addr[k] = [v]
-        self.state = {"last_scanned_block": self.config['start_block'], "address": addr}
+        self.state = { "last_scanned_block": self.config['start_block'] - 1, "address": addr }
         # self.state = {"last_scanned_block": 0}
 
     def restore(self):
@@ -103,7 +104,7 @@ class ScannerState(EventScannerState):
         # 通过事件状态更新数据库
         pass
 
-    def start_chunk(self, block_number, chunk_size):
+    def start_chunk(self, block_number):
         pass
 
     def end_chunk(self, block_number):
@@ -115,37 +116,27 @@ class ScannerState(EventScannerState):
         if time.time() - self.last_save > 60:
             self.save()
 
-    def save_events(self, logs: List[EventLog]) -> EventLog:
-        # 记录事件到本地数据库，当数据异常时可以从本地数据重建数据
-        return save_logs(logs)
+    def save_blocks(self, blocks: List[BlockLog]):
+        """记录块到本地数据库,可以从本地数据重建数据"""
+        BlockLog.save_logs(blocks)
 
-    def check_event(self, eventLog: EventLog, new_contract_address: Optional[Callable], contracts: dict = None) -> Tuple[int, List[EventLog]]:
-        _eventLog = eventLog
-        _event = from_json(_eventLog.event)
-        block_number = _eventLog.blockNumber
-        status = {"create_contract_block": 0}
-        checked = []
+    def process_transaction(self, block: TxData):
+        # TODO
+        pass
 
-        def check_create_contract(contract_name=None, contract_address=None):
-            if contract_name and contract_address:
-                status['create_contract_block'] = block_number
-                if new_contract_address:
-                    new_contract_address(contract_name, contract_address)
-                    checked.append(_eventLog)
-            return True
-
-        # 调用事件处理器插件处理
-        self.events.callHandle(eventLog.contract, _event, eventLog.timestamp, contracts, check_create_contract, is_check=True)
-        return status['create_contract_block'], checked
-
-    def process_event(self, eventLog: EventLog, contracts: dict = None) -> None:
+    def process_event(self, eventLog: EventInfo, contracts: dict = None, new_contract_address: Optional[Callable] = None) -> None:
         """在事件处理器插件根据事件生成地本数据"""
         block_when = eventLog.timestamp
         contract = eventLog.contract
-        event = from_json(eventLog.event)
+        event = eventLog.event
+
+        # print("process_event contract:", contract, event.event)
 
         def check_create_contract(contract_name=None, contract_address=None):
-            return False
+            if contract_name and contract_address:
+                if new_contract_address:
+                    new_contract_address(contract_name, contract_address)
+            return False    # 如果返回True将不会调用handle
 
         # 调用事件处理器插件处理
         self.events.callHandle(contract, event, block_when, contracts, check_create_contract)

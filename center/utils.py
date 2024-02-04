@@ -5,6 +5,42 @@ import json
 ROOT_PATH = os.path.split(os.path.realpath(__file__))[0]
 
 
+def retry(func):
+
+    def inner(*args, **kwargs):
+        ret = func(*args, **kwargs)
+        max_retry = 3
+        number = 0
+        if not ret:
+            while number < max_retry:
+                number += 1
+                print("尝试第:{}次".format(number))
+                ret = func(*args, **kwargs)
+                if ret:
+                    break
+        return ret
+
+    return inner
+
+
+def async_retry(func):
+
+    async def inner(*args, **kwargs):
+        ret = await func(*args, **kwargs)
+        max_retry = 3
+        number = 0
+        if not ret:
+            while number < max_retry:
+                number += 1
+                print("尝试第:{}次".format(number))
+                ret = await func(*args, **kwargs)
+                if ret:
+                    break
+        return ret
+
+    return inner
+
+
 class Utils:
 
     @classmethod
@@ -28,7 +64,7 @@ class Utils:
         for c in cs:
             n <<= 5
             n |= cls.char_to_value(c)
-        n <<= (4 + 5 * (12 - l))
+        n <<= (4 + 5 * (12-l))
         if l > 12:
             n |= cls.char_to_value(strs[12]) & int(0x0F)
         return n

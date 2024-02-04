@@ -1,7 +1,7 @@
-protobuf>=3.19.4
+protobuf>=4.25.2
 git+https://github.com/xiangxn/graphene_mongo.git@v0.2.13a#egg=graphene_mongo
 googleapis-common-protos==1.56.0
-web3==5.28.0
+web3==6.15.0
 tqdm==4.63.0
 
 # flask

@@ -30,7 +30,7 @@
     "mongo": {
         "host": "mongodb://localhost:3001/",
         "db": "donut_center",
-        "log": "donut_event_log"
+        "log": "donut_block_log"
     },
     "discord": {
         "bot_server": "104.152.208.28:10086",

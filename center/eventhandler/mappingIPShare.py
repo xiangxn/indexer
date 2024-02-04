@@ -16,7 +16,6 @@ def handleCreateIPshare(timestamp, event: EventData, contracts):
             'blockNumber'
         }
     """
-
     args = event.args
     subject = args.subject
     amount = str(args.amount)

@@ -1,80 +1,16 @@
 import datetime
-import sys
 import time
-from abc import ABC, abstractmethod
 from typing import List, Tuple, Optional, Callable, Iterable
-
 from web3 import Web3
 from web3.exceptions import BlockNotFound
 from eth_abi.codec import ABICodec
 from web3.types import EventData
-
 from web3._utils.filters import construct_event_filter_params
 from web3._utils.events import get_event_data
 from center.events import Events
 from center.database.logs import EventLog, create_log, getLogCount, getLogs
-
+from center.base_scanner_state import BaseScannerState
 from center.logger import Logger
-
-
-class EventScannerState(ABC):
-    """应用程序状态，会记住在崩溃的情况下扫描了哪些块。
-    """
-
-    @abstractmethod
-    def get_last_scanned_block(self) -> int:
-        """在上一个周期扫描的最后一个块的编号。
-        :return: 如果还没有扫描到块，则为 0
-        """
-
-    @abstractmethod
-    def start_chunk(self, block_number: int):
-        """将通过 JSON-RPC 轮询多个块的数据。
-        如果需要，启动数据库会话。
-        """
-
-    @abstractmethod
-    def end_chunk(self, block_number: int):
-        """扫描仪完成了一些块。
-        现在保留您所在州的所有数据。
-        """
-
-    @abstractmethod
-    def save_events(self, losg: List[EventLog]) -> EventLog:
-        """预存储事件数据到本地数据库"""
-
-    @abstractmethod
-    def check_event(self, eventLog: EventLog, new_contract_address: Optional[Callable], contracts: dict = None) -> Tuple[int, List[EventLog]]:
-        """检查事件,此方法会先调用一次处理handle
-        如果事件处理handle中调用了 new_contract_address 则说明有新的合约被创建,这种情况下回清理当前块以后的所有事件日志
-        
-        :param eventLog: 事件日志数据
-        :param new_contract_address: 有新的合约被创建, 需要handle内调用
-        :param contracts: 配置的固定合约dict
-        :return: 如果没有新合约创建返回0,如果有时则返回被创建时的块号
-        """
-
-    @abstractmethod
-    def process_event(self, eventLog: EventLog, contracts: dict = None) -> None:
-        """处理传入事件。
-        此函数从 Web3 获取原始事件，将它们转换为您的应用程序内部格式，然后将它们保存在数据库或其他状态中。
-        :param eventLog: 事件日志数据
-        :param contracts: 配置的固定合约dict
-        """
-
-    @abstractmethod
-    def delete_data(self, since_block: int) -> int:
-        """删除自扫描此块以来的所有数据。
-        清除任何潜在的次要重组数据。
-        """
-
-    @abstractmethod
-    def add_address(self, contract: str, address: str) -> None:
-        """添加新的要跟踪的合约地址"""
-
-    @abstractmethod
-    def get_address(self, contract: str) -> list:
-        """返回动态跟踪的合约地址"""
 
 
 class EventScanner:
@@ -90,7 +26,7 @@ class EventScanner:
 
     def __init__(self,
                  web3: Web3,
-                 state: EventScannerState,
+                 state: BaseScannerState,
                  events: Events,
                  max_chunk_scan_size: int = 10000,
                  max_request_retries: int = 30,
@@ -425,7 +361,7 @@ class EventScanner:
                         raise
         return end_block, []
 
-    def _fetch_events_for_all(self, web3, contract_name: str, argument_filters: dict, from_block: int, to_block: int) -> List[EventData]:
+    def _fetch_events_for_all(self, web3: Web3, contract_name: str, argument_filters: dict, from_block: int, to_block: int) -> List[EventData]:
         if from_block is None:
             raise TypeError("Missing mandatory keyword argument to getLogs: fromBlock")
         args = argument_filters.copy()

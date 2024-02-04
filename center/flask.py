@@ -17,5 +17,5 @@ app.add_url_rule('/graphql', view_func=GraphQLView.as_view(
 
 def flask_run(config):
     mongoengine.connect(db=config['mongo']['db'], host=config['mongo']['host'])
-    mongoengine.connect(db=config['mongo']['log'], host=config['mongo']['host'], alias="event_logs")
+    mongoengine.connect(db=config['mongo']['log'], host=config['mongo']['host'], alias="block_logs")
     app.run(host="0.0.0.0", port=config['graphql_port'])

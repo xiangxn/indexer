@@ -2,7 +2,7 @@ import graphene
 from graphene_mongo import MongoengineObjectType
 from .fields import CustomNode, DonutField, DonutConnectionField
 
-from .logs import EventLog as EventLogModel
+from .block import BlockLog as BlockLogModel, ReceiptLog as ReceiptLogModel
 from .models import Account as AccountModel
 from .models import Donut as DonutModel
 from .models import Holder as HolderModel
@@ -15,10 +15,19 @@ from .models import Donate as DonateModel
 from .models import Counter as CounterModel
 
 
-class EventLog(MongoengineObjectType):
+class BlockLog(MongoengineObjectType):
 
     class Meta:
-        model = EventLogModel
+        model = BlockLogModel
+        interfaces = (CustomNode, )
+        filter_fields = { "blockNumber": ["gt", "lt"] }
+        ordery_by = "-blockNumber"
+
+
+class ReceiptLog(MongoengineObjectType):
+
+    class Meta:
+        model = ReceiptLogModel
         interfaces = (CustomNode, )
         filter_fields = { "blockNumber": ["gt", "lt"] }
         ordery_by = "-blockNumber"
@@ -117,12 +126,19 @@ class Counter(MongoengineObjectType):
 class Query(graphene.ObjectType):
     node = graphene.relay.Node.Field()
     # event logs
-    eventLog = DonutField(EventLog)
-    eventLogs = DonutConnectionField(EventLog)
-    eventLogCount = graphene.Field(graphene.Int)
+    blockLog = DonutField(BlockLog)
+    blockLogs = DonutConnectionField(BlockLog)
+    blockLogCount = graphene.Field(graphene.Int)
 
-    def resolve_eventLogCount(root, info, **kwargs):
-        return EventLogModel.objects.count()
+    def resolve_blockLogCount(root, info, **kwargs):
+        return BlockLogModel.objects.count()
+
+    receiptLog = DonutField(ReceiptLog)
+    receiptLogs = DonutConnectionField(ReceiptLog)
+    receiptLogCount = graphene.Field(graphene.Int)
+
+    def resolve_receiptLogCount(root, info, **kwargs):
+        return ReceiptLogModel.objects.count()
 
     # Account
     account = DonutField(Account)

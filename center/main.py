@@ -11,6 +11,8 @@ from center.server import donut_run
 from center.syncsvr import SyncSvr
 from center.flask import flask_run
 
+from center.scan_block import ScanBlock
+
 
 def main(argv):
     """Program entry point.
@@ -34,27 +36,22 @@ URL: <{url}>
     arg_parser.add_argument('command', choices=['grpc', 'sync', 'flask'], nargs='?', help='the command to run')
     arg_parser.add_argument('-V', '--version', action='version', version='{0} {1}'.format(metadata.project, metadata.version))
     arg_parser.add_argument('-I', '--init', action='store_true', help='Whether to sync initial data?')
-    arg_parser.add_argument('-D', '--debug', action='store_true', help='debug mode')
     arg_parser.add_argument('-L', '--local', action='store_true', help='Restoring data from local database')
-    arg_parser.add_argument('-B',
-                            '--block',
-                            help='Clears all data after the specified block, then restores the data from the event log before starting the incremental scan.')
+    arg_parser.add_argument('-D', '--debug', action='store_true', help='debug mode')
 
     args = arg_parser.parse_args(args=argv[1:])
     config_info = procConfig(args.config)
     if args.command == "grpc":
         donut_run(config_info)
     elif args.command == "sync":
-        block = flag = 0
+        flag = 2
         if args.init:
-            flag = 1
+            flag = 0
         elif args.local:
-            flag = 2
-        elif args.block:
-            flag = 3
-            block = int(args.block)
+            flag = 1
 
-        ss = SyncSvr(config_info, flag, args.debug, block=block)
+        # ss = SyncSvr(config_info, flag, args.debug, block=block)
+        ss = ScanBlock(config_info, flag, args.debug)
 
         def handler(__signalnum: int, __frame) -> None:
             ss.Stop()
