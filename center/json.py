@@ -29,6 +29,17 @@ class JsonDecoder(json.JSONDecoder):
                     d[k] = bytes.fromhex(v.lstrip("BYTE__"))
                 elif v.startswith("HEXB__"):
                     d[k] = HexBytes(v.lstrip("HEXB__"))
+            elif isinstance(v, list):
+                vlist = []
+                for item in v:
+                    if isinstance(item, str):
+                        if item.startswith("BYTE__"):
+                            vlist.append(bytes.fromhex(item.lstrip("BYTE__")))
+                        elif item.startswith("HEXB__"):
+                            vlist.append(HexBytes(item.lstrip("HEXB__")))
+                    else:
+                        vlist.append(item)
+                d[k] = vlist
         return d
 
 
