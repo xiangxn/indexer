@@ -66,6 +66,8 @@ class Events:
             topic_list = []
             topic_dict = {}
             for event_name in contract['handlers'].keys():
+                if event_name == TRANSFER_EVENT_NAME:
+                    continue
                 event = self.getEvent(contract_name, event_name)
                 abi = event._get_event_abi()
                 topic = encode_hex(event_abi_to_log_topic(abi))  # type: ignore
@@ -111,10 +113,13 @@ class Events:
         handle = self.contracts[event.contract]['handlers'][event.eventName]
         if handle:
             if is_check == False:
+                addr = None
+                if event.event:
+                    addr = event.event.address
                 self.logger.debug("New event: {}.{} at {} {}: {}".format(event.contract, event.event, event.blockNumber,
-                                                                         datetime.datetime.utcfromtimestamp(event.timestamp).isoformat(), event.address))
+                                                                         datetime.datetime.utcfromtimestamp(event.timestamp).isoformat(), addr))
             try:
-                handle(event, contracts, check_create_contract=call_back)
+                handle(event, contracts=contracts, check_create_contract=call_back)
             except Exception as e:
                 self.logger.exception(f"callHandle error: {e}")
         else:

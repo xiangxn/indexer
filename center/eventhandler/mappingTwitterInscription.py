@@ -7,7 +7,7 @@ import sys
 import re
 
 
-def handleInscriptionData(eventInfo: EventInfo, contracts):
+def handleInscriptionData(eventInfo: EventInfo, **kv):
     event = eventInfo.event
     timestamp = eventInfo.timestamp
     id = str(event.args.id)

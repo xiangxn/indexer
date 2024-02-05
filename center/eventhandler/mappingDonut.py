@@ -3,7 +3,7 @@ from center.eventhandler.base import getDonut, getUser, createId, getIndex
 from center.database.block import EventInfo
 
 
-def handleDonate(eventInfo: EventInfo, contracts):
+def handleDonate(eventInfo: EventInfo, contracts, **kv):
     timestamp = eventInfo.timestamp
     event = eventInfo.event
     donator = getUser(event.args.donator, timestamp)
@@ -24,14 +24,14 @@ def handleDonate(eventInfo: EventInfo, contracts):
     donut.save()
 
 
-def handleFTCBurned(eventInfo: EventInfo, contracts):
+def handleFTCBurned(eventInfo: EventInfo, **kv):
     event = eventInfo.event
     donut = getDonut()
     donut.totalFTCBurned = str(int(donut.totalFTCBurned) + int(event.args.FTCBurned))
     donut.save()
 
 
-def createDonate(eventInfo: EventInfo, contracts):
+def createDonate(eventInfo: EventInfo, **kv):
     timestamp = eventInfo.timestamp
     event = eventInfo.event
     donatedId = createId(event)

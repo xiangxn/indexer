@@ -126,9 +126,6 @@ class ScannerState(BaseScannerState):
 
     def process_event(self, eventLog: EventInfo, contracts: dict = None, new_contract_address: Optional[Callable] = None) -> None:
         """在事件处理器插件根据事件生成地本数据"""
-        block_when = eventLog.timestamp
-        contract = eventLog.contract
-        event = eventLog.event
 
         # print("process_event contract:", contract, event.event)
 
@@ -136,7 +133,7 @@ class ScannerState(BaseScannerState):
             if contract_name and contract_address:
                 if new_contract_address:
                     new_contract_address(contract_name, contract_address)
-            return False    # 如果返回True将不会调用handle
+            return False  # 如果返回True将不会调用handle
 
         # 调用事件处理器插件处理
-        self.events.callHandle(contract, event, block_when, contracts, check_create_contract)
+        self.events.callHandle(eventLog, contracts, check_create_contract)
