@@ -1,11 +1,12 @@
 import asyncio
 from center.logger import Logger
-from web3 import Web3, AsyncWeb3
-from web3.middleware import geth_poa_middleware, async_geth_poa_middleware
+from web3 import AsyncWeb3
+from web3.middleware import async_geth_poa_middleware
 import time
 from center.discord_bot import DiscordBot
 from center.scanner_state import ScannerState
 from center.events import Events
+from center.database.block import BlockLog
 from tqdm import tqdm
 import datetime
 from center.block_scanner import BlockScanner
@@ -121,6 +122,27 @@ class ScanBlock:
         duration = time.time() - start
         print_log(f"Scanned total {processed_count} events, in {duration} seconds, total {min(blocks_to_scan, total_chunks_scanned)} chunk scans performed")
 
+    async def database_scan(self):
+        blocks_to_scan = BlockLog.getLogCount()
+        total_blocks_scanned = 0
+        start = time.time()
+        with tqdm(total=blocks_to_scan, unit='Block') as progress_bar:
+
+            def _update_progress(current, current_block_timestamp, chunk_size, events_count):
+                if current_block_timestamp:
+                    formatted_time = datetime.datetime.utcfromtimestamp(current_block_timestamp).strftime("%d-%m-%Y")
+                else:
+                    formatted_time = "no block time available"
+                progress_bar.set_description(f"Current block: {current} ({formatted_time}), events processed in a batch {events_count}")
+                progress_bar.update(chunk_size)
+
+            # 运行扫描
+            total_blocks_scanned = await self.scanner.scan_database(blocks_to_scan, self.config['scan_database_step_size'], progress_callback=_update_progress)
+
+        self.state.save()
+        duration = time.time() - start
+        print_log(f"Scanned total {total_blocks_scanned}/{blocks_to_scan} events, in {duration} seconds.")
+
     async def init_sync_scan(self, clean=True):
         """从配置的块开始在链上扫描
         """
@@ -145,12 +167,36 @@ class ScanBlock:
             self.logger.exception(msg)
             self.post_msg(msg)
 
+    async def init_database_scan(self):
+        self.IS_CONTINUOUS = True
+        self.state.reset()
+        self.state.cleanCache()  #清除状态缓存
+        self.state.dropData()  #删除数据
+        try:
+            await self.database_scan()
+            await asyncio.sleep(1)
+        except Exception as e:
+            self.logger.exception(f"database scan error: {e}")
+
+    async def increment_sync_scan(self):
+        try:
+            if False == self.IS_CONTINUOUS:
+                self.state.restore()
+            while (self.RUN_SYNC):
+                await self.scan()
+                await asyncio.sleep(self.config['realtime_scan_interval_sec'])
+        except Exception as e:
+            msg = f"increment scan error: {e}"
+            self.logger.exception(msg)
+            self.post_msg(msg)
+
     def Run(self):
-        self.loop = asyncio.get_event_loop()
         if self.init_mode == 0:
             print_log("init data...")
-            self.loop.run_until_complete(asyncio.wait([self.loop.create_task(self.init_sync_scan())]))
+            asyncio.run(self.init_sync_scan())
         elif self.init_mode == 1:
             print_log("init data from database...")
+            asyncio.run(self.init_database_scan())
         print_log("init data complete.")
         print_log("Start incremental sync...")
+        asyncio.run(self.increment_sync_scan())

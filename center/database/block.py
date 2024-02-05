@@ -6,6 +6,7 @@ from typing import Any, Dict, List, Union, cast
 from mongoengine.queryset.visitor import Q
 from web3.datastructures import AttributeDict
 from center.json import json_decode
+from web3 import Web3
 
 
 class EventInfo(object):
@@ -45,6 +46,11 @@ class ReceiptLog(Document):
             if tmp_log is None:
                 log.save()
 
+    @classmethod
+    def get_receipts(cls, tx_hashs):
+        datas = list(cls.objects(txHash__in=tx_hashs).all())
+        return [d.get() for d in datas]
+
 
 class BlockLog(Document):
     meta = { "collection": "blocks", "db_alias": "block_logs"}
@@ -74,12 +80,13 @@ class BlockLog(Document):
                 log.save()
 
     @classmethod
-    def getLogCount(cls):
+    def getLogCount(cls) -> int:
         return cls.objects().count()
 
     @classmethod
     def getLogs(cls, offset: int, size: int):
-        return list(cls.objects().order_by("blockNumber").skip(offset).limit(size))
+        datas = list(cls.objects().order_by("blockNumber").skip(offset).limit(size))
+        return [d.get() for d in datas]
 
     @classmethod
     def getLogsByBlock(cls, start_block: int, end_block: int):

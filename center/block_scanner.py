@@ -8,11 +8,11 @@ from web3.datastructures import AttributeDict
 from web3._utils.filters import construct_event_filter_params
 from web3._utils.events import get_event_data
 from center.events import Events, TRANSFER_EVENT_NAME
-from center.database.logs import EventLog, create_log, getLogCount, getLogs
+from center.database.logs import getLogs
 from center.base_scanner_state import BaseScannerState
 from center.logger import Logger
 from center.database.block import BlockLog, ReceiptLog, EventInfo
-from center.utils import retry, async_retry
+from center.utils import async_retry
 from aiohttp import ClientResponseError
 
 
@@ -254,29 +254,65 @@ class BlockScanner:
     def new_dynamic_address(self, contract: str, address: str):
         self.state.add_address(contract, address)
 
-    def scan_database(self, total: int, scan_size: int = 1000, progress_callback=Optional[Callable]) -> int:
+    async def scan_database(self, total: int, scan_size: int = 1000, progress_callback=Optional[Callable]) -> int:
         processed = 0
         offset = 0
-        total = getLogCount()
         last_block = 0
+        contracts = self.events.getContractNames()
         while processed < total:
-            data = getLogs(offset, scan_size)
-            for item in data:
-                last_block = item.blockNumber
-                # 如果有新创建的合约, 则读取新的合约地址
-                self.state.check_event(item, self.new_dynamic_address, self.contracts)
-                # 根据事件生成数据表
-                self.state.process_event(item, self.contracts)
-            count = len(data)
-            if progress_callback:
-                progress_callback(data[-1].blockNumber, data[-1].timestamp, count)
-            offset += count
-            processed += count
+            blocks = BlockLog.getLogs(offset, scan_size)
+            for block in blocks:
+                eventLogs: List[EventInfo] = []
+                last_block = block.number
+                tx_map = {t.hash.hex(): t for t in block.transactions}
+                # 获取此块交易的所有receipts
+                receipts = ReceiptLog.get_receipts(tx_map.keys())
+                for receipt in receipts:
+                    if receipt.status == 0:
+                        continue
+                    tx = tx_map.get(receipt.transactionHash.hex())
+                    for contract in contracts:
+                        adds = self.state.get_address(contract)
+                        if len(adds) == 0:
+                            continue
+                        hasTransfer = self.events.getHandle(contract, TRANSFER_EVENT_NAME)
+                        if hasTransfer and tx.to in adds:
+                            ei = EventInfo()
+                            ei.index = -1
+                            ei.eventName = TRANSFER_EVENT_NAME
+                            ei.blockNumber = tx.blockNumber
+                            ei.contract = contract
+                            ei.timestamp = block.timestamp
+                            # ei.event = evt
+                            ei.receipt = receipt
+                            ei.transaction = tx
+                            eventLogs.append(ei)
+                        # 处理合约事件
+                        for log in receipt.logs:
+                            evt = self.events.getEventData(self.web3, contract, log)
+                            if evt and evt.logIndex is not None and evt.address in adds:
+                                ei = EventInfo()
+                                ei.eventName = evt.event
+                                ei.index = evt.logIndex
+                                ei.blockNumber = evt.blockNumber
+                                ei.contract = contract
+                                ei.timestamp = block.timestamp
+                                ei.event = evt
+                                ei.receipt = receipt
+                                ei.transaction = tx
+                                eventLogs.append(ei)
+                eventLogs.sort(key=lambda o: (o.blockNumber, o.index))
+                # 调用handle处理逻辑
+                for ei in eventLogs:
+                    self.state.process_event(ei, self.contracts)
+                if progress_callback:
+                    progress_callback(block.number, block.timestamp, 1, len(eventLogs))
+                offset += 1
+                processed += 1
         self.state.end_chunk(last_block)
         return processed
 
-    def stop(self):
-        self.IS_RUN = False
+
 
     async def scan(self, start_block, end_block, progress_callback=Optional[Callable]) -> Tuple[list, int]:
         """执行扫描。
