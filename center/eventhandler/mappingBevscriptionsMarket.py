@@ -6,28 +6,8 @@ import json
 import sys
 import re
 
-TxData = TypedDict("TxData", {
-    "accessList": AccessList,
-    "blockHash": HexBytes,
-    "blockNumber": BlockNumber,
-    "chainId": int,
-    "data": Union[bytes, HexStr],
-    "from": ChecksumAddress,
-    "gas": Wei,
-    "gasPrice": Wei,
-    "maxFeePerGas": Wei,
-    "maxPriorityFeePerGas": Wei,
-    "hash": HexBytes,
-    "input": HexStr,
-    "nonce": Nonce,
-    "r": HexBytes,
-    "s": HexBytes,
-    "to": ChecksumAddress,
-    "transactionIndex": int,
-    "type": Union[int, HexStr],
-    "v": int,
-    "value": Wei,
-}, total=False)
+MarketContract = '0x3550133fFFCAC85F880E159702Be0E4a7049b532'
+BatchPurchaseContract = '0xBc3E40fe9e069108dd9B86F6d10130910D760f65'
 
 def _transfer(eventInfo: EventInfo, **kv):
     """这里只处理用户的list操作
@@ -43,8 +23,12 @@ def _transfer(eventInfo: EventInfo, **kv):
     marketContract = transaction.to
     data = getHex(transaction.input)
 
-    # TODO 如果用户已经有一个有效的pending中的list，则新的list无效
     listTranction = ListTransaction.objects(id=hash).first()
+
+    # 如果用户已经有一个有效的pending中的list，则新的list无效
+    userPendingList = ListTransaction.objects(user=user, isValid=True, status=0)
+    if len(userPendingList) > 0:
+        return
 
     # Market contract as a holder
     dex = getUser(marketContract)
@@ -99,7 +83,7 @@ def handleprotocol_TransferBM20TokenForListing(eventInfo: EventInfo, **kv):
     event = eventInfo.event
     f = event.args.from
     t = event.args.to
-    listHash = event.args.id
+    listHash = event.args.listId
 
     transaction = eventInfo.transaction
     value = transaction.value
@@ -123,10 +107,16 @@ def handleprotocol_TransferBM20TokenForListing(eventInfo: EventInfo, **kv):
         return
 
     # deal
-    result = transferInscription(listTranction.tick, orignalCaller, to, listTranction.amount)
+    if to == BatchPurchaseContract:
+        # 批量购买的
+        result = transferInscription(listTranction.tick, MarketContract, orignalCaller, listTranction.amount)
+    else:
+        # 用户购买的
+        result = transferInscription(listTranction.tick, MarketContract, to, listTranction.amount)
+    
     listTranction.status = 1
     listTranction.save()
-    
+
 
 def parseData(data):
     try:
