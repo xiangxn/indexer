@@ -1,5 +1,5 @@
 from center.database.models import *
-from web3.types import (EventData)
+from center.database.block import EventInfo
 from center.decorator import new_contract
 from center.eventhandler.base import getDonut, createId, getUser, getIndex, getHex, getAddress
 import json
@@ -7,7 +7,9 @@ import sys
 import re
 
 
-def handleInscriptionData(timestamp, event, contracts):
+def handleInscriptionData(eventInfo: EventInfo, contracts):
+    event = eventInfo.event
+    timestamp = eventInfo.timestamp
     id = str(event.args.id)
     data = event.args.data
     value = event.args.value

@@ -1,12 +1,15 @@
 from center.database.models import *
-from web3.types import (EventData)
 from center.eventhandler.base import getDonut, getUser, createId, getIndex
+from center.database.block import EventInfo
 
-def handleDonate(timestamp, event: EventData, contracts):
+
+def handleDonate(eventInfo: EventInfo, contracts):
+    timestamp = eventInfo.timestamp
+    event = eventInfo.event
     donator = getUser(event.args.donator, timestamp)
     ethAmount = str(event.args.ethAmount)
     subject = getUser(event.args.subject, timestamp)
-    
+
     subject.receivedDonate = str(int(subject.receivedDonate) + int(ethAmount))
     subject.save()
 
@@ -20,13 +23,17 @@ def handleDonate(timestamp, event: EventData, contracts):
     donut.totalDonated = str(int(donut.totalDonated) + int(ethAmount))
     donut.save()
 
-def handleFTCBurned(timestamp, event, contracts):
+
+def handleFTCBurned(eventInfo: EventInfo, contracts):
+    event = eventInfo.event
     donut = getDonut()
     donut.totalFTCBurned = str(int(donut.totalFTCBurned) + int(event.args.FTCBurned))
     donut.save()
 
 
-def createDonate(timestamp, event, contracts):
+def createDonate(eventInfo: EventInfo, contracts):
+    timestamp = eventInfo.timestamp
+    event = eventInfo.event
     donatedId = createId(event)
     donate = Donate(id=donatedId)
     index = getIndex('donate')

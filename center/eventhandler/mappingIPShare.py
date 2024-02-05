@@ -1,21 +1,11 @@
 from center.database.models import *
 from center.eventhandler.base import getUser, getDonut, getIndex, createId
-from web3.types import (EventData)
+from center.database.block import EventInfo
 
 
-def handleCreateIPshare(timestamp, event: EventData, contracts):
-    """
-    event = {
-            'args'
-            'event'
-            'logIndex'
-            'transactionIndex'
-            'transactionHash'
-            'address'
-            'blockHash'
-            'blockNumber'
-        }
-    """
+def handleCreateIPshare(eventInfo: EventInfo, contracts):
+    event = eventInfo.event
+    timestamp = eventInfo.timestamp
     args = event.args
     subject = args.subject
     amount = str(args.amount)
@@ -48,7 +38,9 @@ def handleCreateIPshare(timestamp, event: EventData, contracts):
     donut.save()
 
 
-def handleTrade(timestamp, event, contracts):
+def handleTrade(eventInfo: EventInfo, contracts):
+    event = eventInfo.event
+    timestamp = eventInfo.timestamp
 
     args = event.args
     trader = args.trader
@@ -100,7 +92,9 @@ def handleTrade(timestamp, event, contracts):
     holder.save()
 
 
-def handleValueCaptured(timestamp, event, contracts):
+def handleValueCaptured(eventInfo: EventInfo, contracts):
+    event = eventInfo.event
+    timestamp = eventInfo.timestamp
     args = event.args
     user = getUser(args.subject, timestamp)
     investor = getUser(args.investor, timestamp)
@@ -122,7 +116,9 @@ def handleValueCaptured(timestamp, event, contracts):
     capture.save()
 
 
-def createTrade(timestamp, event):
+def createTrade(eventInfo: EventInfo):
+    event = eventInfo.event
+    timestamp = eventInfo.timestamp
     tradeId = createId(event)
     trade = Trade(id=tradeId)
     trade.index = getIndex('trade')
