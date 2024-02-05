@@ -134,4 +134,15 @@ class Counter(Document):
     meta = { 'collection': 'counter'}
 
     id = StringField(required=True, primary_key=True)
-    index = IntField(equired=True, default=0)
+    index = IntField(required=True, default=0)
+
+class ListTransaction(Document):
+    meta = { 'collection': 'list_transaction' }
+
+    id = StringField(required=True, primary_key=True)
+    user = ReferenceField("Account")
+    tick = StringField()
+    src20 = ReferenceField('Src20')
+    amount = StringField(required=True, default="0")
+    isValid = BooleanField(required=True, default=False)
+    status = IntField(required=True, default=0) # 0: pending 1: deal 2: cancel

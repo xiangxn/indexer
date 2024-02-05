@@ -162,6 +162,8 @@ def handleInscriptionData(eventInfo: EventInfo, **kv):
             src20Balance.tick = tick
             src20Balance.holder = sender
             src20Balance.amount = "0"
+        
+        if src20Balance.amount == "0":
             src20.holderCount = src20.holderCount + 1
 
         if src20.supply == src20.max:

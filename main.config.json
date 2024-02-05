@@ -6,7 +6,8 @@
     "contracts": {
         "IPShare": "0x272A64DB94106e98d6733d599727AEDBB336c878",
         "Donut": "0x1B0dfa8d105287C10D3D2A6a67bA503b396244A9",
-        "TwitterInscription": "0xf414dF7d8260A8e1e007F72892Cf5F0A7955cf04"
+        "TwitterInscription": "0xf414dF7d8260A8e1e007F72892Cf5F0A7955cf04",
+        "BevscriptionsMarket": "0x3550133fFFCAC85F880E159702Be0E4a7049b532"
     },
     "sync_cfg": {
         "chain_api": [

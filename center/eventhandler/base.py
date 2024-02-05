@@ -64,3 +64,8 @@ def getDonut() -> Donut:
 
 def formatOddString(s: str) -> str:
     return s if len(s) % 2 == 0 else f'0{s}'
+
+def hexStrToString(hexStr) -> str:
+    hex = hexStr.encode('utf-8')
+    strBin = binascii.unhexlify(hex)
+    return strBin.decode('utf-8')

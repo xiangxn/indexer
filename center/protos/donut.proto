@@ -132,3 +132,13 @@ message Counter {
   string id = 1;
   int64 index = 2;
 }
+
+message ListTransaction {
+  string id = 1;
+  Account user = 2;
+  string tick = 3;
+  Src20 src20 = 4;
+  string amount = 5;
+  bool isValid = 6;
+  int64 status = 7;
+}

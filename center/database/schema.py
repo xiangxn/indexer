@@ -13,7 +13,7 @@ from .models import Src20 as Src20Model
 from .models import Src20Balance as Src20BalanceModel
 from .models import Donate as DonateModel
 from .models import Counter as CounterModel
-
+from .models import ListTransaction as ListTransactionModel
 
 class BlockLog(MongoengineObjectType):
 
@@ -122,6 +122,14 @@ class Counter(MongoengineObjectType):
         model = CounterModel
         interfaces = (CustomNode, )
 
+class ListTransaction(MongoengineObjectType):
+
+    class Meta:
+            model = ListTransactionModel
+            interface = (CustomNode, )
+            filter_fields = { "amount": ["lt", "gt", "eq", "ne"], "id": ["in"], "tick": ["in"] }
+            order_by = "-amount"
+
 
 class Query(graphene.ObjectType):
     node = graphene.relay.Node.Field()
@@ -172,6 +180,9 @@ class Query(graphene.ObjectType):
 
     counter = DonutField(Counter)
     counters = DonutConnectionField(Counter)
+
+    listTransaction = DonutField(ListTransaction)
+    listTransactions = DonutConnectionField(ListTransaction)
 
 
 schema = graphene.Schema(query=Query, types=[Account, Donut, Holder, ValueCaptured, Trade, Inscription, Src20, Src20Balance, Donate, Counter])

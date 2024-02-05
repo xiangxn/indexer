@@ -1,0 +1,27 @@
+[
+    {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": true,
+            "internalType": "address",
+            "name": "from",
+            "type": "address"
+          },
+          {
+            "indexed": true,
+            "internalType": "address",
+            "name": "to",
+            "type": "address"
+          },
+          {
+            "indexed": false,
+            "internalType": "bytes32",
+            "name": "listId",
+            "type": "bytes32"
+          }
+        ],
+        "name": "protocol_TransferBM20TokenForListing",
+        "type": "event"
+      }
+]
