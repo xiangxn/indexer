@@ -7,7 +7,7 @@ from web3.types import EventData
 from web3.datastructures import AttributeDict
 from web3._utils.filters import construct_event_filter_params
 from web3._utils.events import get_event_data
-from center.events import Events
+from center.events import Events, TRANSFER_EVENT_NAME
 from center.database.logs import EventLog, create_log, getLogCount, getLogs
 from center.base_scanner_state import BaseScannerState
 from center.logger import Logger
@@ -31,21 +31,23 @@ class BlockScanner:
                  web3: AsyncWeb3,
                  state: BaseScannerState,
                  events: Events,
-                 max_chunk_scan_size: int = 10000,
-                 max_request_retries: int = 30,
+                 max_chunk_scan_size: int = 10,
                  request_interval_sec: float = 0.5,
                  request_retry_seconds: float = 3.0,
                  contracts: dict = dict(),
                  logger: Logger = None,
                  switch_provider_handle=None):
         """
-        :param contract: web3智能合约对象
+        :param web3: 异步Web3对象
+        :param state: 扫描的状态管理对象
         :param events: 扫描的 web3 Event 管理对象
         :param filters: 传递给 get_logs 的过滤器
-        :param max_chunk_scan_size: JSON-RPC API 限制我们查询的块数。 （建议：主网 10,000，测试网 500,000）
-        :param max_request_retries: 当失败时重新尝试调用 JSON-RPC 的次数
+        :param max_chunk_scan_size: 单次并发JSON-RPC请求数量
         :param request_interval_sec: 每次JSON-RPC的间隔
         :param request_retry_seconds: 失败请求之间的延迟,让 JSON-RPC 服务器恢复
+        :param contracts: 配置文件中配置的合约map
+        :param logger: 日志对象
+        :param switch_provider_handle: 切换web3 api的回调
         """
         self.IS_RUN = False
         self.logger = logger
@@ -201,7 +203,6 @@ class BlockScanner:
         # 获取所有加载的合约，以执行扫描
         contracts = self.events.getContractNames()
         eventLogs: List[EventInfo] = []
-
         for transactions in transactions_group:
             transaction_map = self.get_transaction_map(transactions)
             receipts, errs = await self.batch_fetch_receipt(transactions)
@@ -211,23 +212,43 @@ class BlockScanner:
                 await asyncio.sleep(self.request_interval_sec)
             for receipt in receipts:
                 timestamp = block_timestamp.get(receipt.blockNumber)
+                tx = transaction_map.get(receipt.transactionHash.hex())
                 for contract in contracts:
                     adds = self.state.get_address(contract)
                     if len(adds) == 0:
                         continue
+                    # 处理原生转账生成事件
+                    hasTransfer = self.events.getHandle(contract, TRANSFER_EVENT_NAME)
+                    if hasTransfer and tx.to in adds:
+                        ei = EventInfo()
+                        ei.index = -1
+                        ei.eventName = TRANSFER_EVENT_NAME
+                        ei.blockNumber = tx.blockNumber
+                        ei.contract = contract
+                        ei.timestamp = timestamp
+                        # ei.event = evt
+                        ei.receipt = receipt
+                        ei.transaction = tx
+                        eventLogs.append(ei)
+                    # 处理合约事件
                     for log in receipt.logs:
                         evt = self.events.getEventData(self.web3, contract, log)
-                        if evt:
+                        # evt.logIndex 块中日志索引位置的整数，待处理时为空
+                        # 我们无法避免小的链重组,但至少我们必须避免尚未开采的区块
+                        if evt and evt.logIndex is not None and evt.address in adds:
                             ei = EventInfo()
+                            ei.eventName = evt.event
+                            ei.index = evt.logIndex
+                            ei.blockNumber = evt.blockNumber
                             ei.contract = contract
                             ei.timestamp = timestamp
                             ei.event = evt
                             ei.receipt = receipt
-                            ei.transaction = transaction_map.get(receipt.transactionHash.hex())
+                            ei.transaction = tx
                             eventLogs.append(ei)
             await asyncio.sleep(self.request_interval_sec)
 
-        eventLogs.sort(key=lambda o: (o.event.blockNumber, o.event.logIndex))
+        eventLogs.sort(key=lambda o: (o.blockNumber, o.index))
         return timestamp, eventLogs
 
     def new_dynamic_address(self, contract: str, address: str):

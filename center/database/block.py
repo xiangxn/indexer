@@ -1,5 +1,5 @@
 from mongoengine import *
-from web3.types import BlockData, TxReceipt, EventData, TxData
+from web3.types import BlockData, TxReceipt, EventData, TxData, BlockNumber
 from center.json import JsonEncoder
 from web3._utils.encoding import FriendlyJsonSerde
 from typing import Any, Dict, List, Union, cast
@@ -12,8 +12,11 @@ class EventInfo(object):
     contract: str = None
     timestamp: int = 0
     event: EventData = None
+    eventName: str = None
     receipt: TxReceipt
     transaction: TxData
+    index: int = 0
+    blockNumber: BlockNumber = 0
 
 
 class ReceiptLog(Document):

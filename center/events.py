@@ -5,9 +5,12 @@ from typing import Tuple
 from center.decorator import new_contract
 from center.logger import Logger
 from center.utils import Utils, ROOT_PATH
+from center.database.block import EventInfo
 from web3.types import LogReceipt, EventData
 from eth_utils import encode_hex, event_abi_to_log_topic
 from web3._utils.events import get_event_data
+
+TRANSFER_EVENT_NAME = "_transfer"
 
 
 class Events:
@@ -28,7 +31,7 @@ class Events:
             if not filename.endswith(".json"):
                 continue
             name = os.path.splitext(filename)[0]
-            self.contracts[name] = {"handlers": {}, "topic_list": [], "entry": None, "topic_dict": None}
+            self.contracts[name] = { "handlers": {}, "topic_list": [], "entry": None, "topic_dict": None }
             self.contracts[name]['entry'] = self.web3.eth.contract(abi=Utils.loadAbi(name))
             count += 1
         self.logger.warning(f"Load {count} contract abi file in total.")
@@ -50,6 +53,11 @@ class Events:
                         func = new_contract()(func)  #添加函数装饰,处理 check_create_contract
                     handlers[event] = func
                     events_count += 1
+                elif f == TRANSFER_EVENT_NAME:
+                    func = getattr(mod, f)
+                    handlers[TRANSFER_EVENT_NAME] = func
+                    events_count += 1
+
             self.contracts[contract]['handlers'] = handlers
         self.logger.warning(f"Load {events_count} contract event handle in total.")
 
@@ -93,15 +101,21 @@ class Events:
         abi = event._get_event_abi()
         return get_event_data(web3.codec, abi, log_entry)
 
-    def callHandle(self, contract, event, block_when, contracts, call_back, is_check=False):
-        handle = self.contracts[contract]['handlers'][event.event]
+    def getHandle(self, contract, event_name):
+        try:
+            return self.contracts[contract]['handlers'][event_name]
+        except Exception as e:
+            return None
+
+    def callHandle(self, event: EventInfo, contracts, call_back, is_check=False):
+        handle = self.contracts[event.contract]['handlers'][event.eventName]
         if handle:
             if is_check == False:
-                self.logger.debug("New event: {}.{} at {} {}: {}".format(contract, event.event, event.blockNumber,
-                                                                         datetime.datetime.utcfromtimestamp(block_when).isoformat(), event.address))
+                self.logger.debug("New event: {}.{} at {} {}: {}".format(event.contract, event.event, event.blockNumber,
+                                                                         datetime.datetime.utcfromtimestamp(event.timestamp).isoformat(), event.address))
             try:
-                handle(block_when, event, contracts, check_create_contract=call_back)
+                handle(event, contracts, check_create_contract=call_back)
             except Exception as e:
                 self.logger.exception(f"callHandle error: {e}")
         else:
-            self.logger.warning(f"Event handler not implemented: {event.event}")
+            self.logger.warning(f"Event handler not implemented: {event.eventName}")

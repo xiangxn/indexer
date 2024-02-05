@@ -62,7 +62,6 @@ class ScanBlock:
             contracts=self.public_config['contracts'],
             request_interval_sec=self.config['request_interval_sec'],
             request_retry_seconds=self.config['request_retry_seconds'],
-            max_request_retries=self.config['max_request_retries'],
             # 从 JSON-RPC 请求时的最大块数，并且我们不太可能超过 JSON-RPC 服务器的响应大小限制
             max_chunk_scan_size=self.config['max_chunk_scan_size'])
 
