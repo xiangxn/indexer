@@ -19,7 +19,7 @@ def _transfer(eventInfo: EventInfo, **kv):
     transaction = eventInfo.transaction
     value = event.args.value
     hash = transaction.hash
-    user = transaction.from
+    user = transaction['from']
     marketContract = transaction.to
     data = getHex(transaction.input)
 
@@ -81,15 +81,15 @@ def _transfer(eventInfo: EventInfo, **kv):
 def handleprotocol_TransferBM20TokenForListing(eventInfo: EventInfo, **kv):
     print("handle list")
     event = eventInfo.event
-    f = event.args.from
+    f = event.args['from']
     t = event.args.to
     listHash = event.args.listId
 
     transaction = eventInfo.transaction
     value = transaction.value
-    orignalCaller = transaction.from
+    orignalCaller = transaction['from']
 
-    listTranction = ListTransaction.objects(id:hash).first()
+    listTranction = ListTransaction.objects(id=hash).first()
 
     if listTranction is None:
         return
@@ -127,16 +127,16 @@ def parseData(data):
         return None
 
 
-def transferInscription(tick, from, to, amount):
-    fromId = tick + '-' + from
+def transferInscription(tick, _from, to, amount):
+    fromId = tick + '-' + _from
     toId = tick + '-' + to
 
-    src20 = Src20.objects(id:tick).first()
+    src20 = Src20.objects(id=tick).first()
     if src20 is None:
         return False
 
-    fromBalance = Src20Balance.objects(id:fromId).first()
-    toBalance = Src20Balance.objects(id:toId).first()
+    fromBalance = Src20Balance.objects(id=fromId).first()
+    toBalance = Src20Balance.objects(id=toId).first()
 
     try:
         if (fromBalance is None) or (int(fromBalance.amount) < int(amount)):

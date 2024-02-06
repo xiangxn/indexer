@@ -125,10 +125,10 @@ class Counter(MongoengineObjectType):
 class ListTransaction(MongoengineObjectType):
 
     class Meta:
-            model = ListTransactionModel
-            interface = (CustomNode, )
-            filter_fields = { "amount": ["lt", "gt", "eq", "ne"], "id": ["in"], "tick": ["in"] }
-            order_by = "-amount"
+        model = ListTransactionModel
+        interfaces = (CustomNode, )
+        filter_fields = { "amount": ["lt", "gt", "eq", "ne"], "id": ["in"], "tick": ["in"] }
+        order_by = "-amount"
 
 
 class Query(graphene.ObjectType):
