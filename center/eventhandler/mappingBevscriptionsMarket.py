@@ -67,6 +67,10 @@ def _transfer(eventInfo: EventInfo, **kv):
     if (p is not 'src20') or (op is not 'list'):
         return
 
+    src20 = Src20.objects(id=tick).first()
+    if src20 is None:
+        return False
+
     # transfer inscription
     result = transferInscription(tick, user, marketContract, amt)
     if result is False:
@@ -90,7 +94,7 @@ def handleprotocol_TransferBM20TokenForListing(eventInfo: EventInfo, **kv):
     value = transaction.value
     orignalCaller = transaction['from']
 
-    listTranction = ListTransaction.objects(id=hash).first()
+    listTranction = ListTransaction.objects(id=listHash).first()
 
     if listTranction is None:
         return
@@ -101,7 +105,7 @@ def handleprotocol_TransferBM20TokenForListing(eventInfo: EventInfo, **kv):
     # cancel
     if f == to:
         # transfer inscripton back
-        result = transferInscription(listTranction.tick, transaction.contract, to, listTranction.amount)
+        result = transferInscription(listTranction.tick, MarketContract, to, listTranction.amount)
         if result:
             listTranction.status = 2  # 0: pending, 1: deal, 2: cancel
             listTranction.save()
