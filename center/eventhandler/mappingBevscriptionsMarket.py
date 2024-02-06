@@ -9,6 +9,7 @@ import re
 MarketContract = '0x3550133fFFCAC85F880E159702Be0E4a7049b532'
 BatchPurchaseContract = '0xBc3E40fe9e069108dd9B86F6d10130910D760f65'
 
+
 def _transfer(eventInfo: EventInfo, **kv):
     """这里只处理用户的list操作
         即用户发送transfer交易，附带inputdata，用户list铭文
@@ -49,11 +50,11 @@ def _transfer(eventInfo: EventInfo, **kv):
     # must start with 'data:application/json,'
     if not data.startswith('data:application/json,'):
         return
-        
+
     insData = data.replace('data:application/json,', "", 1)
 
     # parse inscription object
-    obj = parseData(ins)
+    obj = parseData(insData)
 
     if obj is None:
         return
@@ -82,7 +83,7 @@ def handleprotocol_TransferBM20TokenForListing(eventInfo: EventInfo, **kv):
     print("handle list")
     event = eventInfo.event
     f = event.args['from']
-    t = event.args.to
+    to = event.args.to
     listHash = event.args.listId
 
     transaction = eventInfo.transaction
@@ -102,7 +103,7 @@ def handleprotocol_TransferBM20TokenForListing(eventInfo: EventInfo, **kv):
         # transfer inscripton back
         result = transferInscription(listTranction.tick, transaction.contract, to, listTranction.amount)
         if result:
-            listTranction.status = 2 # 0: pending, 1: deal, 2: cancel
+            listTranction.status = 2  # 0: pending, 1: deal, 2: cancel
             listTranction.save()
         return
 
@@ -113,7 +114,7 @@ def handleprotocol_TransferBM20TokenForListing(eventInfo: EventInfo, **kv):
     else:
         # 用户购买的
         result = transferInscription(listTranction.tick, MarketContract, to, listTranction.amount)
-    
+
     listTranction.status = 1
     listTranction.save()
 
@@ -148,9 +149,9 @@ def transferInscription(tick, _from, to, amount):
     if toBalance is None:
         toBalance = Src20Balance(id=toId)
         toBalance.tick = tick
-        toBalance.holder = marketContract
+        toBalance.holder = MarketContract
         toBalance.amount == "0"
-        
+
     if toBalance.amount == "0":
         src20.holderCount = src20.holderCount + 1
 
@@ -165,4 +166,3 @@ def transferInscription(tick, _from, to, amount):
     toBalance.save()
     src20.save()
     return True
-
