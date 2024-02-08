@@ -27,9 +27,9 @@ def _transfer(eventInfo: EventInfo, **kv):
     listTranction = ListTransaction.objects(id=hash).first()
 
     # 如果用户已经有一个有效的pending中的list，则新的list无效
-    userPendingList = ListTransaction.objects(user=user, isValid=True, status=0)
-    if len(userPendingList) > 0:
-        return
+    # userPendingList = ListTransaction.objects(user=user, isValid=True, status=0)
+    # if len(userPendingList) > 0:
+    #     return
 
     # Market contract as a holder
     dex = getUser(marketContract)
