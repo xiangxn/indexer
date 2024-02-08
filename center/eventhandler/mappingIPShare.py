@@ -125,9 +125,7 @@ def handleValueCaptured(eventInfo: EventInfo, **kv):
     capture.save()
 
 
-def createTrade(eventInfo: EventInfo, **kv):
-    event = eventInfo.event
-    timestamp = eventInfo.timestamp
+def createTrade(timestamp, event):
     tradeId = createId(event)
     trade = Trade(id=tradeId)
     trade.index = getIndex('trade')
