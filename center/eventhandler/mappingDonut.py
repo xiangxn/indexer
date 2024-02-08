@@ -31,9 +31,7 @@ def handleFTCBurned(eventInfo: EventInfo, **kv):
     donut.save()
 
 
-def createDonate(eventInfo: EventInfo, **kv):
-    timestamp = eventInfo.timestamp
-    event = eventInfo.event
+def createDonate(timestamp, event, contracts):
     donatedId = createId(event)
     donate = Donate(id=donatedId)
     index = getIndex('donate')
