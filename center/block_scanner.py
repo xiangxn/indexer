@@ -195,7 +195,7 @@ class BlockScanner:
         while len(errs) > 0:
             b2, errs = await self.batch_fetch_block(errs)
             blocks += b2
-            await asyncio.sleep(self.request_interval_sec)
+            await asyncio.sleep(self.request_retry_seconds)
 
         transactions_group = self.get_transactions_by_blocks(blocks)
         block_timestamp = self.get_block_timestamp(blocks)
@@ -209,7 +209,7 @@ class BlockScanner:
             while len(errs) > 0:
                 r2, errs = await self.batch_fetch_receipt(errs)
                 receipts += r2
-                await asyncio.sleep(self.request_interval_sec)
+                await asyncio.sleep(self.request_retry_seconds)
             for receipt in receipts:
                 timestamp = block_timestamp.get(receipt.blockNumber)
                 tx = transaction_map.get(receipt.transactionHash.hex())
