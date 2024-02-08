@@ -24,7 +24,7 @@ def _transfer(eventInfo: EventInfo, **kv):
     marketContract = transaction.to
     data = getHex(transaction.input)
 
-    listTranction = ListTransaction.objects(id=hash).first()
+    listTransaction = ListTransaction.objects(id=hash).first()
 
     # 如果用户已经有一个有效的pending中的list，则新的list无效
     # userPendingList = ListTransaction.objects(user=user, isValid=True, status=0)
@@ -35,12 +35,12 @@ def _transfer(eventInfo: EventInfo, **kv):
     dex = getUser(marketContract)
 
     # the transaction is handled
-    if listTranction is not None:
+    if listTransaction is not None:
         return
 
-    listTranction = ListTransaction(id=hash)
-    listTranction.user = user
-    listTranction.save()
+    listTransaction = ListTransaction(id=hash)
+    listTransaction.user = user
+    listTransaction.save()
 
     if len(data) < 3:
         return
@@ -76,11 +76,11 @@ def _transfer(eventInfo: EventInfo, **kv):
     if result is False:
         return
 
-    listTranction.isValid = True
-    listTranction.tick = tick
-    listTranction.src20 = src20
-    listTranction.amount = amt
-    listTranction.save()
+    listTransaction.isValid = True
+    listTransaction.tick = tick
+    listTransaction.src20 = src20
+    listTransaction.amount = amt
+    listTransaction.save()
 
 
 def handleprotocol_TransferBM20TokenForListing(eventInfo: EventInfo, **kv):
@@ -94,33 +94,33 @@ def handleprotocol_TransferBM20TokenForListing(eventInfo: EventInfo, **kv):
     value = transaction.value
     orignalCaller = transaction['from']
 
-    listTranction = ListTransaction.objects(id=listHash).first()
+    listTransaction = ListTransaction.objects(id=listHash).first()
 
-    if listTranction is None:
+    if listTransaction is None:
         return
 
-    if not listTranction.isValid:
+    if not listTransaction.isValid:
         return
 
     # cancel
     if f == to:
         # transfer inscripton back
-        result = transferInscription(listTranction.tick, MarketContract, to, listTranction.amount)
+        result = transferInscription(listTransaction.tick, MarketContract, to, listTransaction.amount)
         if result:
-            listTranction.status = 2  # 0: pending, 1: deal, 2: cancel
-            listTranction.save()
+            listTransaction.status = 2  # 0: pending, 1: deal, 2: cancel
+            listTransaction.save()
         return
 
     # deal
     if to == BatchPurchaseContract:
         # 批量购买的
-        result = transferInscription(listTranction.tick, MarketContract, orignalCaller, listTranction.amount)
+        result = transferInscription(listTransaction.tick, MarketContract, orignalCaller, listTransaction.amount)
     else:
         # 用户购买的
-        result = transferInscription(listTranction.tick, MarketContract, to, listTranction.amount)
+        result = transferInscription(listTransaction.tick, MarketContract, to, listTransaction.amount)
 
-    listTranction.status = 1
-    listTranction.save()
+    listTransaction.status = 1
+    listTransaction.save()
 
 
 def parseData(data):
