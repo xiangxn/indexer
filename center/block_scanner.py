@@ -159,9 +159,9 @@ class BlockScanner:
         for b in block_numbers:
             tasks.append(asyncio.create_task(self.fetch_block(b)))
         done, _ = await asyncio.wait(tasks)
-        blocks += [t.result() for t in done]
-        blocks = [b for b in blocks if isinstance(b, AttributeDict)]
-        errs = [e for e in blocks if isinstance(e, AttributeDict) == False]
+        results = [t.result() for t in done]
+        blocks = [b for b in results if isinstance(b, AttributeDict)]
+        errs = [e for e in results if isinstance(e, AttributeDict) == False]
         blocks.sort(key=lambda o: o.number)
         return blocks, errs
 
@@ -171,9 +171,9 @@ class BlockScanner:
         for transaction in transactions:
             tasks.append(asyncio.create_task(self.fetch_receipt(transaction.hash)))
         done, _ = await asyncio.wait(tasks)
-        receipts += [t.result() for t in done]
-        receipts = [r for r in receipts if isinstance(r, AttributeDict)]
-        errs = [e for e in receipts if isinstance(e, AttributeDict) == False]
+        results = [t.result() for t in done]
+        receipts = [r for r in results if isinstance(r, AttributeDict)]
+        errs = [e for e in results if isinstance(e, AttributeDict) == False]
         receipts.sort(key=lambda o: o.blockNumber)
         return receipts, errs
 
