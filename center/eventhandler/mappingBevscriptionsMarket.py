@@ -64,7 +64,7 @@ def _transfer(eventInfo: EventInfo, **kv):
     tick = obj['tick']
     amt = obj['amt']
 
-    if (p is not 'src20') or (op is not 'list'):
+    if (p != 'src20') or (op != 'list'):
         return
 
     src20 = Src20.objects(id=tick).first()
