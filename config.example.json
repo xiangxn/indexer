@@ -4,32 +4,27 @@
     "graphql_port": 5000,
     "grpc_host": "grpc",
     "contracts": {
-        "Committee": "0x524d1C459DE80820D8EeeDdbeB891799c5523C85",
-        "CommunityFactory": "0x113866ac496Bd85A8A8a687d04139bA441d09276",
-        "ERC20StakingFactory": "0xF897E61D2bd4002B5dE45026f6a9F5b4704Cb8Be",
-        "SPStakingFactory": "0x9Df9D7412E4462AA863A35B54142d1D35F07b214",
-        "CosmosStakingFactory": "0xbe1709B3D175aaecA132BEA8630063E99f090D68",
-        "Gauge": "0x56c44B51eaCcd283024523dF1268A8E01887C218",
-        "ERC1155StakingFactory": "0x54301D1dc7751B1824cF3020a3f479112caD738c",
-        "TreasuryFactory": "0x8428aD36744a9917112c2A9a40C4f48FCF80e39E"
+        "IPShare": "0x272A64DB94106e98d6733d599727AEDBB336c878",
+        "Donut": "0x1B0dfa8d105287C10D3D2A6a67bA503b396244A9",
+        "TwitterInscription": "0xf414dF7d8260A8e1e007F72892Cf5F0A7955cf04",
+        "BevscriptionsMarket": "0x3550133fFFCAC85F880E159702Be0E4a7049b532"
     },
     "sync_cfg": {
         "chain_api": [
-            "https://goerli.infura.io/v3/8b89094fea30422cbb87ee199c924397",
-            "https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
+            "https://rpc-canary-1.bevm.io/",
+            "https://rpc-canary-2.bevm.io/"
         ],
-        "start_block": 6625402,
-        "max_chunk_scan_size": 5000,
-        "max_request_retries": 10,
-        "request_interval_sec": 0.5,
+        "start_block": 12667241,
+        "max_chunk_scan_size": 10,
+        "request_interval_sec": 2.0,
         "request_retry_seconds": 3.0,
         "realtime_scan_interval_sec": 5,
-        "chain_reorg_safety_blocks": 1,
+        "chain_reorg_safety_blocks": 3,
         "scan_database_step_size": 1000
     },
     "mongo": {
-        "host": "mongodb://localhost:3001/",
-        "db": "donut_center",
+        "host": "mongodb://localhost:27017/",
+        "db": "donut_bevm",
         "log": "donut_block_log"
     },
     "discord": {
