@@ -1,3 +1,4 @@
+import binascii
 from hexbytes import HexBytes
 from center.database.models import *
 from web3.types import (EventData)
@@ -23,7 +24,7 @@ def getAddress(address):
     try:
         # 尝试用Web3来将字符串解析为地址
         web3 = Web3()
-        return web3.toChecksumAddress(address)
+        return web3.to_checksum_address(address)
     except ValueError:
         # 如果解析失败，则不是有效的以太坊地址
         return False
