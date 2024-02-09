@@ -3,7 +3,7 @@ import time
 from typing import List, Tuple, Optional, Callable
 from web3 import AsyncWeb3
 from web3.exceptions import BlockNotFound
-from web3.types import EventData
+from web3.types import EventData, HexBytes
 from web3.datastructures import AttributeDict
 from web3._utils.filters import construct_event_filter_params
 from web3._utils.events import get_event_data
@@ -169,7 +169,10 @@ class BlockScanner:
         tasks = []
         receipts = []
         for transaction in transactions:
-            tasks.append(asyncio.create_task(self.fetch_receipt(transaction.hash)))
+            if isinstance(transaction, HexBytes):
+                tasks.append(asyncio.create_task(self.fetch_receipt(transaction)))
+            else:
+                tasks.append(asyncio.create_task(self.fetch_receipt(transaction.hash)))
         done, _ = await asyncio.wait(tasks)
         results = [t.result() for t in done]
         receipts = [r for r in results if isinstance(r, AttributeDict)]
@@ -311,8 +314,6 @@ class BlockScanner:
                 processed += 1
         self.state.end_chunk(last_block)
         return processed
-
-
 
     async def scan(self, start_block, end_block, progress_callback=Optional[Callable]) -> Tuple[list, int]:
         """执行扫描。
