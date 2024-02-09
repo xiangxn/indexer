@@ -34,6 +34,7 @@ class ScanBlock:
         self.public_config = config
         self.init_mode = mode
         self.api_index = 0
+        self.last_switch_provider_timestamp = None
         self._init_web3()
         self.monitor = DiscordBot(self.public_config['discord'], self.logger)
         self.events = Events(self.web3, self.logger)
@@ -75,16 +76,19 @@ class ScanBlock:
     def switch_provider(self):
         """自动切换api
         """
-        api_count = len(self.config['chain_api'])
-        if api_count < 2: return
-        if self.api_index + 1 < api_count:
-            self.api_index += 1
-        else:
-            self.api_index = 0
-        self._init_web3()
-        self.events.web3 = self.web3
-        self.scanner.web3 = self.web3
-        self.post_msg(f"⚠️ API has been switched: {self.config['chain_api'][self.api_index]}")
+        now = int(time.time())
+        if self.last_switch_provider_timestamp is None or now - self.last_switch_provider_timestamp > 2:
+            self.last_switch_provider_timestamp = now
+            api_count = len(self.config['chain_api'])
+            if api_count < 2: return
+            if self.api_index + 1 < api_count:
+                self.api_index += 1
+            else:
+                self.api_index = 0
+            self._init_web3()
+            self.events.web3 = self.web3
+            self.scanner.web3 = self.web3
+            self.post_msg(f"⚠️ API has been switched: {self.config['chain_api'][self.api_index]}")
 
     def post_msg(self, msg):
         self.monitor.push_message(msg)
