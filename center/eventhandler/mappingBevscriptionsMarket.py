@@ -16,9 +16,7 @@ def _transfer(eventInfo: EventInfo, **kv):
         其他的操作均在事件处理handler中处理
     """
     print("_transfer:", eventInfo.blockNumber, eventInfo.eventName, eventInfo.index)
-    event = eventInfo.event
     transaction = eventInfo.transaction
-    value = event.args.value
     hash = transaction.hash
     user = transaction['from']
     marketContract = transaction.to
