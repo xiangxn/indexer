@@ -33,7 +33,7 @@ def _transfer(eventInfo: EventInfo, **kv):
     #     return
 
     # Market contract as a holder
-    dex = getUser(marketContract)
+    dex = getUser(marketContract, eventInfo.timestamp)
 
     # the transaction is handled
     if listTransaction is not None:
