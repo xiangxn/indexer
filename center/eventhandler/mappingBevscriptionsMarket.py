@@ -20,7 +20,7 @@ def _transfer(eventInfo: EventInfo, **kv):
     """
     print("_transfer:", eventInfo.blockNumber, eventInfo.eventName, eventInfo.index)
     transaction = eventInfo.transaction
-    hash = transaction.hash
+    hash = transaction.hash.hex()
     user = transaction['from']
     marketContract = transaction.to
     data = getHex(transaction.input)
