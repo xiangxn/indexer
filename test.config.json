@@ -1,0 +1,35 @@
+{
+    "grpc_port": 50000,
+    "restful_port": 8081,
+    "graphql_port": 5000,
+    "grpc_host": "grpc",
+    "contracts": {
+        "IPShare": "0x9710e7a815b8fD93f73d2001E298805B428672E9",
+        "Donut": "0x1eBCD877d7Ee492d651455Fb4F6caE1F4Bf33761",
+        "TwitterInscription": "0x1819B505a37C46277711bbC0f6d47B63F8262534",
+        "BevscriptionsMarket": "0xcEB135147D213B671e39EF6dC188661fb7d86e14"
+    },
+    "sync_cfg": {
+        "chain_api": [
+            "https://canary-testnet.bevm.io/"
+        ],
+        "start_block": 618547,
+        "max_chunk_scan_size": 10,
+        "request_interval_sec": 2.0,
+        "request_retry_seconds": 3.0,
+        "realtime_scan_interval_sec": 5,
+        "chain_reorg_safety_blocks": 3,
+        "scan_database_step_size": 1000
+    },
+    "mongo": {
+        "host": "mongodb://root:data-center-2022@mongoa:27017/",
+        "db": "donut_bevm_test",
+        "log": "donut_block_log_test"
+    },
+    "discord": {
+        "bot_server": "104.152.208.28:10086",
+        "channels": {
+            "monitor": "service-monitoring"
+        }
+    }
+}
