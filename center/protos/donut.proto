@@ -141,4 +141,6 @@ message ListTransaction {
   string amount = 5;
   bool isValid = 6;
   int64 status = 7;
+  string finishedHash = 8;
+  string buyer = 9;
 }

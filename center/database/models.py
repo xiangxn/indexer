@@ -146,3 +146,5 @@ class ListTransaction(Document):
     amount = StringField(required=True, default="0")
     isValid = BooleanField(required=True, default=False)
     status = IntField(required=True, default=0) # 0: pending 1: deal 2: cancel
+    finishedHash = StringField()
+    buyer = StringField()

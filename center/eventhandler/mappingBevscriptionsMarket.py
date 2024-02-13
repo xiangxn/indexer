@@ -92,7 +92,7 @@ def handleprotocol_TransferBM20TokenForListing(eventInfo: EventInfo, **kv):
     listHash = event.args.listId
 
     transaction = eventInfo.transaction
-    value = transaction.value
+    finishedHash = transaction.hash.hex()
     orignalCaller = transaction['from']
 
     listTransaction = ListTransaction.objects(id=listHash).first()
@@ -116,10 +116,13 @@ def handleprotocol_TransferBM20TokenForListing(eventInfo: EventInfo, **kv):
     if to == BatchPurchaseContract:
         # 批量购买的
         result = transferInscription(listTransaction.tick, MarketContract, orignalCaller, listTransaction.amount)
+        listTransaction.buyer = orignalCaller
     else:
         # 用户购买的
         result = transferInscription(listTransaction.tick, MarketContract, to, listTransaction.amount)
+        listTransaction.buyer = to
 
+    listTransaction.finishedHash = finishedHash
     listTransaction.status = 1
     listTransaction.save()
 
