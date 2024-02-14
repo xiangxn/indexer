@@ -51,11 +51,15 @@ def _transfer(eventInfo: EventInfo, **kv):
     # must start with 'data:application/json,'
     if not data.startswith('data:application/json,'):
         return
-
+    
     insData = data.replace('data:application/json,', "", 1)
+
+    print('1', insData)
 
     # parse inscription object
     obj = parseData(insData)
+
+    print('2', obj)
 
     if obj is None:
         return
