@@ -91,7 +91,8 @@ class BlockScanner:
 
         # 不要一直扫描到最后一个区块，因为这个区块可能还没有被开采
         try:
-            return await self.web3.eth.block_number - chain_reorg_safety_blocks
+            bn = await self.web3.eth.block_number
+            return bn - chain_reorg_safety_blocks
         except Exception:
             return 0
 

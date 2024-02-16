@@ -4,6 +4,7 @@ from center.database.models import *
 from web3.types import (EventData)
 from web3 import Web3
 
+
 def createId(event: EventData) -> str:
     return "{}-{}".format(event.transactionHash.hex(), event.logIndex)
 
@@ -35,7 +36,7 @@ def getIndex(id: str) -> str:
     if counter is None:
         counter = Counter(id=id)
         counter.index = 0
-    counter.index = counter.index +  1
+    counter.index = counter.index + 1
     counter.save()
     return counter.index
 
@@ -66,7 +67,14 @@ def getDonut() -> Donut:
 def formatOddString(s: str) -> str:
     return s if len(s) % 2 == 0 else f'0{s}'
 
+
 def hexStrToString(hexStr) -> str:
-    hex = hexStr.encode('utf-8')
-    strBin = binascii.unhexlify(hex)
-    return strBin.decode('utf-8')
+    if isinstance(hexStr, bytes):
+        return hexStr.decode()
+    elif isinstance(hexStr, str):
+        if hexStr.startswith("0x"):
+            return bytes.fromhex(hexStr[2:]).decode()
+        else:
+            return bytes.fromhex(hexStr).decode()
+    else:
+        return hexStr
