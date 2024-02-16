@@ -168,8 +168,8 @@ def transferInscription(tick, _from, to, amount):
         src20.holderCount = src20.holderCount + 1
 
     # update balance
-    fromBalance.amount = str(int(fromBalance).amount - int(amount))
-    toBalance.amount = str(int(toBalance).amount + int(amount))
+    fromBalance.amount = str(int(fromBalance.amount) - int(amount))
+    toBalance.amount = str(int(toBalance.amount) + int(amount))
 
     if fromBalance.amount == "0":
         src20.holderCount = src20.holderCount - 1
