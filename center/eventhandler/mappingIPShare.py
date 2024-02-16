@@ -3,12 +3,12 @@ from center.eventhandler.base import getUser, getDonut, getIndex, createId
 from center.database.block import EventInfo
 
 
-def _transfer(eventInfo: EventInfo, **kv):
-    """这是一个特殊的handler,事件来源是transaction中的to为指定合约地址。
-    触发条件是: 1.mapping中有这个handler; 2.合约被调用。
-    可以根据transaction的数据来处理相关逻辑
-    """
-    print("_transfer:", eventInfo.blockNumber, eventInfo.eventName, eventInfo.index)
+# def _transfer(eventInfo: EventInfo, **kv):
+#     """这是一个特殊的handler,事件来源是transaction中的to为指定合约地址。
+#     触发条件是: 1.mapping中有这个handler; 2.合约被调用。
+#     可以根据transaction的数据来处理相关逻辑
+#     """
+#     print("_transfer:", eventInfo.blockNumber, eventInfo.eventName, eventInfo.index)
 
 
 def handleCreateIPshare(eventInfo: EventInfo, **kv):
