@@ -69,13 +69,15 @@ def formatOddString(s: str) -> str:
 
 
 def hexStrToString(hexStr) -> str:
-    print("=======hexStr:", hexStr)
-    if isinstance(hexStr, bytes):
-        return hexStr.decode()
-    elif isinstance(hexStr, str):
-        if hexStr.startswith("0x"):
-            return bytes.fromhex(hexStr.replace("0x", "")).decode()
+    try:
+        if isinstance(hexStr, bytes):
+            return hexStr.decode()
+        elif isinstance(hexStr, str):
+            if hexStr.startswith("0x"):
+                return bytes.fromhex(hexStr.replace("0x", "")).decode()
+            else:
+                return bytes.fromhex(hexStr).decode()
         else:
-            return bytes.fromhex(hexStr).decode()
-    else:
+            return hexStr
+    except:
         return hexStr
