@@ -69,6 +69,7 @@ def formatOddString(s: str) -> str:
 
 
 def hexStrToString(hexStr) -> str:
+    print("=======hexStr:", hexStr)
     if isinstance(hexStr, bytes):
         return hexStr.decode()
     elif isinstance(hexStr, str):
