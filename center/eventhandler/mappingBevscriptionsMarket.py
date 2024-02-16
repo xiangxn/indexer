@@ -18,7 +18,7 @@ def _transfer(eventInfo: EventInfo, **kv):
         即用户发送transfer交易，附带inputdata，用户list铭文
         其他的操作均在事件处理handler中处理
     """
-    print("_transfer:", eventInfo.blockNumber, eventInfo.eventName, eventInfo.index)
+    print("BevscriptionsMarket_transfer:", eventInfo.blockNumber, eventInfo.eventName, eventInfo.index)
     transaction = eventInfo.transaction
     hash = transaction.hash.hex()
     user = transaction['from']
@@ -51,7 +51,7 @@ def _transfer(eventInfo: EventInfo, **kv):
     # must start with 'data:application/json,'
     if not data.startswith('data:application/json,'):
         return
-    
+
     insData = data.replace('data:application/json,', "", 1)
 
     print('1', insData)

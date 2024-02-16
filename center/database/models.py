@@ -140,7 +140,7 @@ class ListTransaction(Document):
     meta = { 'collection': 'list_transaction' }
 
     id = StringField(required=True, primary_key=True)
-    user = ReferenceField("Account")
+    user = StringField()
     tick = StringField()
     src20 = ReferenceField('Src20')
     amount = StringField(required=True, default="0")
