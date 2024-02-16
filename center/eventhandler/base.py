@@ -73,7 +73,7 @@ def hexStrToString(hexStr) -> str:
         return hexStr.decode()
     elif isinstance(hexStr, str):
         if hexStr.startswith("0x"):
-            return bytes.fromhex(hexStr[2:]).decode()
+            return bytes.fromhex(hexStr.replace("0x", "")).decode()
         else:
             return bytes.fromhex(hexStr).decode()
     else:

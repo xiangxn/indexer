@@ -74,7 +74,10 @@ class DonutField(graphene.Field):
 
     def default_resolver(self, _root, info, **args):
         id = args.pop("id")
-        return self.model.objects.get(id=id)
+        try:
+            return self.model.objects.get(id=id)
+        except:
+            return None
 
 
 class DonutConnectionField(MongoengineConnectionField):
