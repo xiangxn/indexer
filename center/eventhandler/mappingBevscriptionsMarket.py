@@ -6,12 +6,12 @@ import json
 import sys
 import re
 
-# MarketContract = '0x3550133fFFCAC85F880E159702Be0E4a7049b532'
-# BatchPurchaseContract = '0xBc3E40fe9e069108dd9B86F6d10130910D760f65'
+MarketContract = '0x3550133fFFCAC85F880E159702Be0E4a7049b532'
+BatchPurchaseContract = '0xBc3E40fe9e069108dd9B86F6d10130910D760f65'
 
 # test net
-MarketContract = '0xcEB135147D213B671e39EF6dC188661fb7d86e14'
-BatchPurchaseContract = '0x28c06d07559e79b020816c57d4302A701dac7440'
+# MarketContract = '0xcEB135147D213B671e39EF6dC188661fb7d86e14'
+# BatchPurchaseContract = '0x28c06d07559e79b020816c57d4302A701dac7440'
 
 def _transfer(eventInfo: EventInfo, **kv):
     """这里只处理用户的list操作
