@@ -18,7 +18,6 @@ def _transfer(eventInfo: EventInfo, **kv):
         即用户发送transfer交易，附带inputdata，用户list铭文
         其他的操作均在事件处理handler中处理
     """
-    print("BevscriptionsMarket_transfer:", eventInfo.blockNumber, eventInfo.eventName, eventInfo.index)
     transaction = eventInfo.transaction
     hash = transaction.hash.hex()
     user = transaction['from']
@@ -54,12 +53,8 @@ def _transfer(eventInfo: EventInfo, **kv):
 
     insData = data.replace('data:application/json,', "", 1)
 
-    print('1', insData)
-
     # parse inscription object
     obj = parseData(insData)
-
-    print('2', obj)
 
     if obj is None:
         return
@@ -89,21 +84,16 @@ def _transfer(eventInfo: EventInfo, **kv):
 
 
 def handleprotocol_TransferBM20TokenForListing(eventInfo: EventInfo, **kv):
-    print("handle list")
     event = eventInfo.event
     f = event.args['from']
     to = event.args.to
     listHash = '0x' + event.args.listId.hex()
-
-    print('list hash', listHash)
 
     transaction = eventInfo.transaction
     finishedHash = transaction.hash.hex()
     orignalCaller = transaction['from']
 
     listTransaction = ListTransaction.objects(id=listHash).first()
-
-    print('list trans', listTransaction)
 
     if listTransaction is None:
         return
