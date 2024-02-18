@@ -93,7 +93,7 @@ def handleprotocol_TransferBM20TokenForListing(eventInfo: EventInfo, **kv):
     event = eventInfo.event
     f = event.args['from']
     to = event.args.to
-    listHash = event.args.listId
+    listHash = event.args.listId.decode()
 
     print('list hash', listHash)
 
