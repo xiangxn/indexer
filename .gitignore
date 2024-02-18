@@ -32,3 +32,4 @@ center/rpc/
 examples/node_modules/
 examples/js/lib/*
 logs/*
+!logs/.gitkeep
