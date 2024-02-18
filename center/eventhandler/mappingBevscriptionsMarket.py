@@ -155,7 +155,7 @@ def transferInscription(tick, _from, to, amount):
     if toBalance is None:
         toBalance = Src20Balance(id=toId)
         toBalance.tick = tick
-        toBalance.holder = MarketContract
+        toBalance.holder = to
         toBalance.amount == "0"
 
     if toBalance.amount == "0":
