@@ -95,11 +95,15 @@ def handleprotocol_TransferBM20TokenForListing(eventInfo: EventInfo, **kv):
     to = event.args.to
     listHash = event.args.listId
 
+    print('list hash', listHash)
+
     transaction = eventInfo.transaction
     finishedHash = transaction.hash.hex()
     orignalCaller = transaction['from']
 
     listTransaction = ListTransaction.objects(id=listHash).first()
+
+    print('list trans', listTransaction)
 
     if listTransaction is None:
         return
